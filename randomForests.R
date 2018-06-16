@@ -98,7 +98,5 @@ preds_rf2_1k <- clusterR(prediction_image, raster::predict, args = list(model = 
 endCluster()
 
 # Save predicted image
-writeRaster(preds_rf2_1k, file.path("<target directory>", names(s[[j]])[1]),
-, →
-format = "GTiff", overwrite = TRUE)
+writeRaster(preds_rf2_1k, file.path("<target directory>", names(s[[j]])[1]), format = "GTiff", overwrite = TRUE)
 }
