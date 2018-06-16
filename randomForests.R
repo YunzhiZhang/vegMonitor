@@ -28,9 +28,7 @@ names(training_image) <- c(paste0("B", 1:7, coll = ""))
 prediction_image <- mask(training_image, dLower)
 
 # Extract values of raster pixels based on vegetation class polygons
-image_dfall = data.frame(matrix(vector(), nrow = 0, ncol =
-, →
-length(names(training_image)) + 1))
+image_dfall = data.frame(matrix(vector(), nrow = 0, ncol = length(names(training_image)) + 1))
 for (i in 1:length(unique(shape_pointData[[responseCol]]))){
 category <- unique(shape_pointData[[responseCol]])[i]
 categorymap <- shape_pointData[shape_pointData[[responseCol]] == category,]
@@ -43,18 +41,14 @@ image_dfall <- rbind(image_dfall, dataSet)
 }
 
 if(is(shape_pointData, "SpatialPolygonsDataFrame")){
-dataSet <- lapply(dataSet, function(x){cbind(x, class =
-, →
-as.numeric(rep(category, nrow(x))))})
+dataSet <- lapply(dataSet, function(x){cbind(x, class = as.numeric(rep(category, nrow(x))))})
 df <- do.call("rbind", dataSet)
 image_dfall <- rbind(image_dfall, df)
 }
 }
 
 # To create data partition for training and test dataset
-image_inBuild <- createDataPartition(y = image_dfall$class, p = 0.7, list =
-, →
-FALSE)
+image_inBuild <- createDataPartition(y = image_dfall$class, p = 0.7, list = FALSE)
 image_train <- image_dfall[image_inBuild,] #training data
 image_train <- image_train[complete.cases(image_train), ]
 image_valid <- image_dfall[-image_inBuild,] #test data, a.k.a validation data
@@ -72,16 +66,10 @@ sum(x[, classCol] == class.k) - nsamples_class), ]
 return(x)
 }
 
-training_bc <- undersample_ds(image_train, "class",
-, →
-min(table(image_train$class)))
+training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
 
-# Building the model with data partition, all bands, 1000 trees and variable
-, →
-importance tracking
-imagemod_rf_1k <- train(as.factor(class) ~ B1 + B2 + B3 + B4 + B5 + B6 + B7,
-, →
-method = "rf", data = training_bc, ntree = 1000, importance = TRUE)
+# Building the model with data partition, all bands, 1000 trees and variable importance tracking
+imagemod_rf_1k <- train(as.factor(class) ~ B1 + B2 + B3 + B4 + B5 + B6 + B7, method = "rf", data = training_bc, ntree = 1000, importance = TRUE)
 
 # Save the trained model
 saveRDS(imagemod_rf_1k, names(s[[j]])[1])
@@ -96,29 +84,17 @@ varImp(imagemod_rf_1k)[1]
 imagepred_valid_1k <- predict(imagemod_rf_1k, image_valid)
 
 # Confusion matrix of trained model on test dataset; provides accuracy
-confusionMatrix1 <- confusionMatrix(imagepred_valid_1k,
-, →
-image_valid$class)$overall[1]
+confusionMatrix1 <- confusionMatrix(imagepred_valid_1k,image_valid$class)$overall[1]
 
-# Confusion matrix of trained model on test dataset; provides kappa
-, →
-coefficient
-confusionMatrix3 <- confusionMatrix(imagepred_valid_1k,
-, →
-image_valid$class)$overall[2]
+# Confusion matrix of trained model on test dataset; provides kappa coefficient
+confusionMatrix3 <- confusionMatrix(imagepred_valid_1k, image_valid$class)$overall[2]
 
-# Confusion matrix of trained model on test dataset; provides user's accuracy
-, →
-by class
-confusionMatrix2 <- confusionMatrix(imagepred_valid_1k,
-, →
-image_valid$class)$byClass[,1]
+# Confusion matrix of trained model on test dataset; provides user's accuracy by class
+confusionMatrix2 <- confusionMatrix(imagepred_valid_1k, image_valid$class)$byClass[,1]
 
 # Apply the RF model to predict the entire image
 beginCluster()
-preds_rf2_1k <- clusterR(prediction_image, raster::predict, args = list(model =
-, →
-imagemod_rf_1k))
+preds_rf2_1k <- clusterR(prediction_image, raster::predict, args = list(model = imagemod_rf_1k))
 endCluster()
 
 # Save predicted image
