@@ -24,9 +24,9 @@ For simplicity, first navigate to a desired directory and clone this git reposit
 
 2. After signing up for GEE, log into your account within GEE and navigate to the central code editor. Create a new repository and name it accordingly. 
 
-3. Next, we need to upload certain assets required for our analysis. Within the GEE code editor, navigate to the `Assets` tab and select `NEW` and `Table upload`. Select all the files corresponding to the generic file path `/GEE_Inputs/DL_PL_KN_Dissolve_WGS84` with the endings `.cpg, .dbf, .prj, .sbn, .sbx, .shp, .shp.xml, .shx `. Let this asset be names `DL_PL_KN_Dissolve_WGS84`. Import this asset into the code editor with the variable name `table`.
+3. Next, we need to upload certain assets required for our analysis. Within the GEE code editor, navigate to the `Assets` tab and select `NEW` and `Table upload`. Select all the files corresponding to the generic file path `/GEE_Inputs/DL_PL_KN_Dissolve_WGS84` with the endings `.cpg, .dbf, .prj, .sbn, .sbx, .shp, .shp.xml, .shx `. Let this asset be named `DL_PL_KN_Dissolve_WGS84`. Import this asset into the code editor with the variable name `table`.
 
-4. Select all the files corresponding to the generic file path `/GEE_Inputs/DL_PL_KN_Dissolve_UTM43N` with the endings `.cpg, .dbf, .prj, .sbn, .sbx, .shp, .shp.xml, .shx `. Let this asset be names `DL_PL_KN_Dissolve_UTM43N`. Import this asset into the code editor with the variable name `table2`.
+4. Select all the files corresponding to the generic file path `/GEE_Inputs/DL_PL_KN_Dissolve_UTM43N` with the endings `.cpg, .dbf, .prj, .sbn, .sbx, .shp, .shp.xml, .shx `. Let this asset be named `DL_PL_KN_Dissolve_UTM43N`. Import this asset into the code editor with the variable name `table2`.
 
 5. We now have the important variables imported. Now, copy and paste the code from the `GEEBulkFilter.js` file into the GEE code editor. With this, we are good to go. 
 
