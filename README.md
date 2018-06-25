@@ -20,4 +20,4 @@ Firstly, we need to download relevant remote-sensing data for our purpose. The G
 
 2. After signing up for GEE, log into your account within GEE and navigate to the central code editor. Create a new repository and name it accordingly. 
 
-3. 
+(Still under development...)
