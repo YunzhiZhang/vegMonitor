@@ -1,4 +1,4 @@
-# Assessing vegetation cover changes in the Northwestern Indian Himalayas from 2013-2017
+# Investigating vegetation cover changes in Dharamshala Tehsil, Northwestern Indian Himalayas, from 2013-2017
 
 This is a project which summarizes remote sensing data processing techniques in order to extract key vegetation data and indications about vegetation changes.
 
@@ -8,6 +8,16 @@ The study area of this project is [Dharamshala Tehsil](https://en.wikipedia.org/
 
 The end of goal of this project is to generate vegetation cover classification images of the study area from 2013-2017. With this images, we aim to develop a change detection technique that would indicate to us regions undergoing significant vegetation loss. These regions would then be flagged for further investigation. 
 
-## Methodologies 
+## Guide to methodologies
 
-### 1. 
+### Bulk filter remote sensing data using Google Earth Engine
+
+Firstly, we need to download relevant remote-sensing data for our purpose. The Google Earth Engine (GEE) provides an efficient means of bulk filtering data before finally downloading it. Here, we choose to download the Landsat 8 Surface Reflectance data. 
+
+1. To start this process, a Google account is necessary. Next, one needs to sign up for GEE. If this is not done as yet, navigate to the following site to sign up:
+
+https://earthengine.google.com/
+
+2. After signing up for GEE, log into your account within GEE and navigate to the central code editor. Create a new repository and name it accordingly. 
+
+3. 
