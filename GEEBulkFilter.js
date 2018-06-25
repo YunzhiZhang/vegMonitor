@@ -12,6 +12,7 @@ function radians(img) {
 return img.toFloat().multiply(Math.PI).divide(180);
 }
 
+// Functions to calculate hillshade
 function hillshade(az, ze, slope, aspect) {
 var azimuth = radians(ee.Image(az));
 var zenith = radians(ee.Image(ze));
@@ -24,7 +25,7 @@ zenith.cos().multiply(slope.cos()));
 
 // Filtering Landast 8 SR ImageCollection
 var collection = ee.ImageCollection('LANDSAT/LC8_SR')
-.filter(ee.Filter.eq('WRS_PATH', 147))
+.filter(ee.Filter.eq('WRS_PATH', 147)) 
 .filter(ee.Filter.eq('WRS_ROW', 38))
 .filterDate('2011-01-01', '2017-05-01')
 .filter(ee.Filter.lte('CLOUD_COVER', 10))
