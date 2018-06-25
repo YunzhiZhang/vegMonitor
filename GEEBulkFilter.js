@@ -4,6 +4,12 @@
 // "table" represents the study area (plus) polygon in the WGS84 CRS
 // "table2" represents the study area (plus) in the UTM 43N projection
 
+// Import key variables
+var imageCollection = ee.ImageCollection("LANDSAT/LC8_SR"),
+    image3 = ee.Image("USGS/SRTMGL1_003"),
+    table = ee.FeatureCollection("users/atreya/DL_PL_KN_Dissolve_WGS84"),
+    table2 = ee.FeatureCollection("users/atreya/DL_PL_KN_Dissolve_UTM43N");
+
 // Functions to calculate hillshade
 function radians(img) {
 return img.toFloat().multiply(Math.PI).divide(180);
