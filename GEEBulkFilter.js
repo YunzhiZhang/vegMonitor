@@ -5,9 +5,7 @@
 // "table2" represents the study area (plus) in the UTM 43N projection
 
 // Import key variables
-var image3 = ee.Image("USGS/SRTMGL1_003"),
-    table = ee.FeatureCollection("users/atreya/DL_PL_KN_Dissolve_WGS84"),
-    table2 = ee.FeatureCollection("users/atreya/DL_PL_KN_Dissolve_UTM43N");
+var image3 = ee.Image("USGS/SRTMGL1_003");
 
 // Functions to calculate hillshade
 function radians(img) {
