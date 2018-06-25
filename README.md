@@ -32,3 +32,6 @@ For simplicity, first navigate to a desired directory and clone this git reposit
 
 6. Run the script and the corresponding data will be sent to your Google Drive for downloading!
 
+### Vegetation Classification and Vegetation Change Detection
+
+For these next steps, please refer to the R Notebooks.
