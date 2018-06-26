@@ -25,20 +25,20 @@ zenith.cos().multiply(slope.cos()));
 }
 
 // Filtering Landast 8 SR ImageCollection
-var collection = ee.ImageCollection('LANDSAT/LC8_SR')
-.filter(ee.Filter.eq('WRS_PATH', 147)) 
-.filter(ee.Filter.eq('WRS_ROW', 38))
-.filterDate('2011-01-01', '2017-05-01')
-.filter(ee.Filter.lte('CLOUD_COVER', 10))
+var collection = ee.ImageCollection('LANDSAT/LC8_SR') // query Landsat 8 SR ImageCollection
+.filter(ee.Filter.eq('WRS_PATH', 147)) // spatial filter
+.filter(ee.Filter.eq('WRS_ROW', 38)) // spatial filter
+.filterDate('2011-01-01', '2017-05-01') // temporal filter
+.filter(ee.Filter.lte('CLOUD_COVER', 10)) // mean cloud score filter
 .map(function(image) {
-return image.clipToCollection(table2);
+return image.clipToCollection(table2); // clip image
 })
-.map(function(image){
-var clear = image.select('cfmask').eq(0);
+.map(function(image){ // return clear image without clouds, cloud-shadows, water and snow
+var clear = image.select('cfmask').eq(0); 
 clear = clear.updateMask(clear);
 return image.updateMask(clear);
 })
-.map(function(image){
+.map(function(image){ // remove pixels significantly affected by terrain-related shadows
 var imageClipped = image3.clip(table);
 var azimuthImage = image.metadata('solar_azimuth_angle');
 var zenithImage = image.metadata('solar_zenith_angle');
@@ -59,7 +59,7 @@ var noList2 = noList.insert(1, 0).insert(3, 0);
 var hillshadeExpFilterRP = hillshadeExpFilter.reproject('EPSG:32643', noList2);
 return image.updateMask(hillshadeExpFilterRP);
 })
-.select(['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7']);
+.select(['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7']); // export bands 1-7 relevant for analysis
 
 // Function/command to bulk export filtered ImageCollection
 var ExportCol = function(col, folder, scale,
