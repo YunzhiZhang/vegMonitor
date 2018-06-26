@@ -1,15 +1,13 @@
 ---
 title: "Clean GEE Output Data"
-output:
-  html_document:
-    df_print: paged
+output: rmarkdown::github_document
 ---
 
 # Reviewing GEE Output Data
 
-Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. Although we can be very sure that these images are of high quality, it is always useful to review these images manually.
+Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. These images have been clipped to a certain general boundary. We would like to reduce this boundary to all altitudes below 3,000 m a.m.s.l. Furthermore, we would also like to replace all 0 values in the images produced with `NA` values.
 
-```{r}
+```{r, eval = F, echo = T}
 if (!require("raster")) install.packages("raster")
 library("raster")
 
@@ -20,41 +18,40 @@ if (!require("Cairo")) install.packages("Cairo")
 library("Cairo")
 
 rlist<-list.files(paste(getwd(),"/GEE_Output", sep =""), pattern="tif", full.names = TRUE) 
-s <- lapply(rlist, brick)
+s <- lapply(rlist, stack)
+polygonLower <- readOGR(paste(getwd(), "/GEE_Input", sep=''), "DL_PL_KN_Lower_UTM43N")
 
+for(i in 1:length(s)){
+  image <- s[[i]]
+  image[image[] == 0] <- NA
+  imageMasked <- mask(image, polygonLower)
+  writeRaster(imageMasked, file.path(paste(getwd(), "/Cleaned_Images", sep = ''), 
+                                     names(s[[i]])[1]), format = "GTiff")
+}
+```
+
+```{r, eval = F, echo = T}
 e <- extent(605000, 655000, 3537500, 3580000)
     mat <- matrix(c(1,1,0,2,2,0,3,3,0,0,0,0,0,0,0,0,4,4,0,5,5,0,0,0), 3,8, byrow=T)
 
-# png(file="Cairo_PNG_72_dpi2.png", 
-#     type="cairo",
-#     units="px", 
-#     width=2800, 
-#     height=2000, 
-#     pointsize=25, 
-#     res=150)
+png(file="Cairo_PNG_72_dpi2.png",
+    type="cairo",
+    units="px",
+    width=2800,
+    height=2000,
+    pointsize=25,
+    res=150)
 
-    # layout(mat, heights = c(1,0.3,1))
-    # par(oma = c(8,6,8,6))
-    # layout.show(5)
-    
-    par(mfrow=c(2,2))
+    layout(mat, heights = c(1,0.3,1))
     par(oma = c(8,6,8,6))
+    layout.show(5)
 
-for(i in 1:4){
+for(i in 1:5){
 plotRGB(s[[i]], r = 4, g = 3, b = 2, stretch = "lin", axes=F, ext = e)
 axis(side=1,cex.axis=1, lwd = 1.5)
 axis(side=2,cex.axis=1, lwd = 1.5)
 box(lwd = 1.5)
 }
 
-# lapply(s, function(x) return(plotRGB(x, r = 4, g = 3, b = 2, stretch = "lin", axes=F, ext = e)))
-
-# dev.off()
-
+dev.off()
 ```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
