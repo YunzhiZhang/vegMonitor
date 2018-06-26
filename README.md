@@ -52,6 +52,6 @@ This script results in 31 Landsat 8 SR images from 2013-2017 being downloaded in
 
 ### 2. Vegetation Classification and Vegetation Change Detection
 
-For these next steps, please refer to the R Notebooks.
+For these next steps, please refer to the additional `.md` files. 
 
 [Still under development...]
