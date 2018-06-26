@@ -1,8 +1,9 @@
 // Corresponding Google Earth Engine Editor code to query an ImageCollection, filter it, and later export
 
-// Variables "table" and "table2" were manually imported into GEE via functions on the API
+// Variables "table" and "table2" are manually imported into GEE via functions on the API
 // "table" represents the study area (plus) polygon in the WGS84 CRS
 // "table2" represents the study area (plus) in the UTM 43N projection
+// refer to README.md on how to import these datasets and convert them to "table" and "table2"
 
 // Import key variables
 var image3 = ee.Image("USGS/SRTMGL1_003");
