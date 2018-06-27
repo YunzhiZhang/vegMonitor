@@ -24,7 +24,7 @@ nacount2014 <- sum(is.na(s2014))
 nacount2015 <- sum(is.na(s2015))
 nacount2016 <- sum(is.na(s2016))
 
-Overall median generation
+# Overall median generation
 for(i in 1:length(names(s)))
 {
 s[[i]][nacount[] >= 14] <- NA
