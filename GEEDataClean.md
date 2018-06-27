@@ -32,7 +32,7 @@ for(i in 1:length(s)){
 
 After doing this, out images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues. The following 5 images were ascertained to be defective and not suitable for further analysis. Their corresponding file names were: `LC81470382014047_6.tif`, `LC81470382014111_7.tif`, `LC81470382015258_19.tif`, `LC81470382017023_28.tif`, `LC81470382017055_29.tif`.
 
-![](/home/atreya/Desktop/Git/vegMonitor/Figures/Defective_Images.png)
+<img src = "https://github.com/AtreyaSh/vegMonitor/blob/master/Figures/Defective_Images.png" width = "800">
 
 These files were excluded from further analysis and the remaining suitable images were defined by the following list of raster stacks. With the new defintion of `s`, we can now move forward with the next post-analyses.
 
