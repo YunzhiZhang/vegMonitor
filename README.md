@@ -52,7 +52,7 @@ This script results in 31 Landsat 8 SR images from 2013-2017 being downloaded in
 
 ### 2. Cleaning GEE Data
 
-For this section, please refer to the markdown file `[GEEDataClean.md](GEEDataClean.md)`.
+For this section, please refer to the markdown file `GEEDataClean.md` with the following [link](GEEDataClean.md).
 
 ### 3. Vegetation Classification and Change Detection
 
