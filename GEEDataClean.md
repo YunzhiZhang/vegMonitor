@@ -1,9 +1,6 @@
 Clean GEE Output Data
 ================
 
-Reviewing GEE Output Data
-=========================
-
 Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. These images have been clipped to a certain general boundary. We would like to reduce this boundary to all altitudes below 3,000 m a.m.s.l. Furthermore, we would also like to replace all 0 values in the images produced with `NA` values. But first we need to load/install some necessary packages.
 
 ``` r
@@ -30,7 +27,7 @@ for(i in 1:length(s)){
 }
 ```
 
-After doing this, out images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues. The following 5 images were ascertained to be defective and not suitable for further analysis. Their corresponding file names were: `LC81470382014047_6.tif`, `LC81470382014111_7.tif`, `LC81470382015258_19.tif`, `LC81470382017023_28.tif`, `LC81470382017055_29.tif`.
+After doing this, our images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues. The following 5 images were ascertained to be defective and not suitable for further analysis. Their corresponding file names were: `LC81470382014047_6.tif`, `LC81470382014111_7.tif`, `LC81470382015258_19.tif`, `LC81470382017023_28.tif`, `LC81470382017055_29.tif`.
 
 <img src = "https://github.com/AtreyaSh/vegMonitor/blob/master/Figures/Defective_Images.png" width = "800">
 
