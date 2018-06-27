@@ -50,8 +50,10 @@ For simplicity, first navigate to a desired directory and clone this git reposit
 
 This script results in 31 Landsat 8 SR images from 2013-2017 being downloaded into Google Drive. These images can be found in the `vegMonitor/GEE_Output` directory. 
 
-### 2. Vegetation Classification and Vegetation Change Detection
+### 2. Cleaning GEE Data
 
-For these next steps, please refer to the additional `.md` files. 
+For this section, please refer to the markdown file `[GEEDataClean.md](GEEDataClean.md)`.
+
+### 3. Vegetation Classification and Change Detection
 
 [Still under development...]
