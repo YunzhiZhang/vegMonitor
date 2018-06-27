@@ -40,11 +40,13 @@ For simplicity, first navigate to a desired directory and clone this git reposit
 
 2. Chooses images with a mean cloud score of less than 10.
 
-3. Removes clouds, cloud-shadows, water and snow from the images to provide clear images for analysis.
+3. Clips the images to a desired shapefile.
 
-4. Removes pixels which experience significant terrain-related shadows. This is done by calculating hillshade and setting a threshold for significant shadows.
+4. Removes clouds, cloud-shadows, water and snow from the images to provide clear images for analysis.
 
-5. Exports resulting images into your Google Drive.
+5. Removes pixels which experience significant terrain-related shadows. This is done by calculating hillshade and setting a threshold for significant shadows.
+
+6. Exports resulting images into your Google Drive.
 
 **Results of running `GEEBukFilter.js`**
 
