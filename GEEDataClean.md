@@ -4,7 +4,7 @@ Clean GEE Output Data
 Reviewing GEE Output Data
 =========================
 
-Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. These images have been clipped to a certain general boundary. We would like to reduce this boundary to all altitudes below 3,000 m a.m.s.l. Furthermore, we would also like to replace all 0 values in the images produced with `NA` values.
+Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. These images have been clipped to a certain general boundary. We would like to reduce this boundary to all altitudes below 3,000 m a.m.s.l. Furthermore, we would also like to replace all 0 values in the images produced with `NA` values. But first we need to load/install some necessary packages.
 
 ``` r
 if (!require("raster")) install.packages("raster")
@@ -12,9 +12,6 @@ library("raster")
 
 if (!require("rgdal")) install.packages("rgdal")
 library("rgdal")
-
-if (!require("Cairo")) install.packages("Cairo")
-library("Cairo")
 ```
 
 Now we have loaded necessary packages. Let's move on to the actual process of cleaning the images.
@@ -33,41 +30,14 @@ for(i in 1:length(s)){
 }
 ```
 
-After doing this, out images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues.
+After doing this, out images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues. The following 5 images were ascertained to be defective and not suitable for further analysis. Their corresponding file names were: `LC81470382014047_6.tif`, `LC81470382014111_7.tif`, `LC81470382015258_19.tif`, `LC81470382017023_28.tif`, `LC81470382017055_29.tif`.
+
+![](/home/atreya/Desktop/Git/vegMonitor/Figures/Defective_Images.png)
+
+These files were excluded from further analysis and the remaining suitable images were defined by the following list of raster stacks. With the new defintion of `s`, we can now move forward with the next post-analyses.
 
 ``` r
-rlist<-list.files(paste(getwd(),"/Cleaned_Images", sep =""), pattern="tif$", full.names = TRUE) 
-s <- lapply(rlist, brick)
-
-e <- extent(605000, 655000, 3537500, 3580000)
-mat <- rbind(c(1,0,2,0,3,0,4,0,5,0),c(0,0,0,0,0,0,0,0,0,0), 
-                    c(6,0,7,0,8,0,9,0,10,0),c(0,0,0,0,0,0,0,0,0,0),
-                    c(11,0,12,0,13,0,14,0,15,0),c(0,0,0,0,0,0,0,0,0,0),
-                    c(16,0,17,0,18,0,19,0,20,0),c(0,0,0,0,0,0,0,0,0,0),
-                    c(21,0,22,0,23,0,24,0,25,0),c(0,0,0,0,0,0,0,0,0,0),
-                    c(26,0,27,0,28,0,29,0,30,0),c(0,0,0,0,0,0,0,0,0,0),
-                    c(31,0,0,0,0,0,0,0,0,0),c(0,0,0,0,0,0,0,0,0,0))
-
-png(file="Cairo_PNG_72_dpi2.png",
-    type="cairo",
-    units="px",
-    width=2000,
-    height=3000,
-    pointsize=20,
-    res=150)
-
-layout(mat)
-par(oma = c(0,8,2,0))
-
-for(i in 1:1){
-plotRGB(s[[i]], r = 4, g = 3, b = 2, stretch = "lin", axes=T, ext = e)
-axis(side=1,cex.axis=1, lwd = 1.5)
-axis(side=2,cex.axis=1, lwd = 1.5)
-box(lwd = 1.5)
-title(main="xyz")
-}
-
-dev.off()
+rlist<-list.files(paste(getwd(),"/Cleaned_Images", sep =""), pattern="tif$", full.names = TRUE)
+s <- lapply(rlist, stack)
+s <- s[-c(7,8,20,29,30)]
 ```
-
-\[Still under development...\]
