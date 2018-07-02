@@ -1,6 +1,3 @@
-# Set up working directory
-setwd("<working directory>")
-
 # Libraries needed
 library(rgdal)
 library(raster)
@@ -9,7 +6,7 @@ library(MASS)
 library(igraph)
 
 # Import and variables definition
-rlist<-list.files(path="<source directory>", pattern="tif$", full.names = TRUE)
+rlist<-list.files(path=paste(getwd(), "/Veg_Classification/", sep=""), pattern="tif$", full.names = TRUE)
 s<- stack(rlist)
 s1 <- stack(rlist[1:14])
 s2 <- stack(rlist[7:21])
@@ -27,7 +24,7 @@ nacount2016 <- sum(is.na(s2016))
 # Overall median generation
 for(i in 1:length(names(s)))
 {
-s[[i]][nacount[] >= 14] <- NA
+  s[[i]][nacount[] >= 14] <- NA
 }
 
 beginCluster()
@@ -37,19 +34,19 @@ endCluster()
 # Annual median, median difference and buffer generation
 for(i in 1:length(names(s2013)))
 {
-s2013[[i]][nacount2013[] >= 4] <- NA
+  s2013[[i]][nacount2013[] >= 4] <- NA
 }
 for(i in 1:length(names(s2014)))
 {
-s2014[[i]][nacount2014[] >= 5] <- NA
+  s2014[[i]][nacount2014[] >= 5] <- NA
 }
 for(i in 1:length(names(s2015)))
 {
-s2015[[i]][nacount2015[] >= 4] <- NA
+  s2015[[i]][nacount2015[] >= 4] <- NA
 }
 for(i in 1:length(names(s2016)))
 {
-s2016[[i]][nacount2016[] >= 3] <- NA
+  s2016[[i]][nacount2016[] >= 3] <- NA
 }
 
 beginCluster()
@@ -61,8 +58,8 @@ mstack1 <- stack(tsM2013, tsM2014)
 mstack2 <- stack(tsM2014, tsM2015)
 mstack3 <- stack(tsM2015, tsM2016)
 subtract <- function(x){
-d = x[[2]]-x[[1]]
-return(d)
+  d = x[[2]]-x[[1]]
+  return(d)
 }
 tsMD_2013_2014 <- calc(mstack1, fun=subtract)
 tsMD_2014_2015 <- calc(mstack2, fun=subtract)
@@ -80,49 +77,49 @@ buffer3[buffer3[] < 1] <- NA
 # Cleaning up groups for U-test
 for(i in 1:6)
 {
-s1[[i]][nacount2013[] >= 4] <- NA
+  s1[[i]][nacount2013[] >= 4] <- NA
 }
 for(j in 7:14)
 {
-s1[[j]][nacount2014[] >= 5] <- NA
+  s1[[j]][nacount2014[] >= 5] <- NA
 }
 for(i in 1:8)
 {
-s2[[i]][nacount2014[] >= 5] <- NA
+  s2[[i]][nacount2014[] >= 5] <- NA
 }
 for(j in 9:15)
 {
-s2[[j]][nacount2015[] >= 4] <- NA
+  s2[[j]][nacount2015[] >= 4] <- NA
 }
 for(i in 1:7)
 {
-s3[[i]][nacount2015[] >= 4] <- NA
+  s3[[i]][nacount2015[] >= 4] <- NA
 }
 for(j in 8:12)
 {
-s3[[i]][nacount2016[] >= 3] <- NA
+  s3[[i]][nacount2016[] >= 3] <- NA
 }
 
 # Applying U-test on buffer stack
 buffer <- stack(buffer1, buffer2, buffer3)
 customUTest <- function(x, i, n1, n2){
-extract <- extract(buffer[[i]], c(1:length(buffer[[i]])))
-cellno <- which(!is.na(extract) == TRUE)
-pb <- txtProgressBar(min = 0, max = length(cellno), initial = 0, char = "=",
-width = NA, title, label, style = 3, file = "")
-
-for(k in 1:length(cellno)){
-e1 <- as.vector(extract(x[[1:n1]], c(cellno[k])))
-e1 <- e1[!is.na(e1)]
-e2 <- as.vector(extract(x[[(n1+1):n2]], c(cellno[k])))
-e2 <- e2[!is.na(e2)]
-p <- wilcox.test(e1, e2, alternative = "less")$p.value
-buffer[[i]][cellno[k]] <- p
-Sys.sleep(0.1)
-setTxtProgressBar(pb, k, title = NULL, label = NULL)
-}
-return(buffer[[i]])
-close(pb)
+  extract <- extract(buffer[[i]], c(1:length(buffer[[i]])))
+  cellno <- which(!is.na(extract) == TRUE)
+  pb <- txtProgressBar(min = 0, max = length(cellno), initial = 0, char = "=",
+                       width = NA, title, label, style = 3, file = "")
+  
+  for(k in 1:length(cellno)){
+    e1 <- as.vector(extract(x[[1:n1]], c(cellno[k])))
+    e1 <- e1[!is.na(e1)]
+    e2 <- as.vector(extract(x[[(n1+1):n2]], c(cellno[k])))
+    e2 <- e2[!is.na(e2)]
+    p <- wilcox.test(e1, e2, alternative = "less")$p.value
+    buffer[[i]][cellno[k]] <- p
+    Sys.sleep(0.1)
+    setTxtProgressBar(pb, k, title = NULL, label = NULL)
+  }
+  return(buffer[[i]])
+  close(pb)
 }
 
 beginCluster()
@@ -140,11 +137,11 @@ test2015_2016_Raw <- test2015_2016; test2015_2016_Raw[test2015_2016_Raw[] > 0.05
 test_Clump <- stack(test2013_2014_Raw, test2014_2015_Raw, test2015_2016_Raw)
 
 for(i in 1:3){
-testClump <- clump(test_Clump[[i]], directions=8, gaps = TRUE)
-clumpFreq <- freq(testClump)
-clumpFreq <- as.data.frame(clumpFreq)
-excludeID <- clumpFreq$value[which(clumpFreq$count==1)]
-test_Clump[[i]][testClump %in% excludeID] <- NA
+  testClump <- clump(test_Clump[[i]], directions=8, gaps = TRUE)
+  clumpFreq <- freq(testClump)
+  clumpFreq <- as.data.frame(clumpFreq)
+  excludeID <- clumpFreq$value[which(clumpFreq$count==1)]
+  test_Clump[[i]][testClump %in% excludeID] <- NA
 }
 
 test2013_2014_Clump <- test_Clump[[1]]
