@@ -8,7 +8,7 @@ The study area of this project is [Dharamshala Tehsil](https://en.wikipedia.org/
 
 The end of goal of this project is to generate vegetation cover classification images of the study area from 2013-2017. With this images, we aim to develop a change detection technique that would indicate to us regions undergoing significant vegetation loss. These regions would then be flagged for further investigation. 
 
-## Guide to Methodologies (Ubuntu Linux OS)
+## Guide to Methodologies (Ubuntu 16.04)
 
 ### 1. Bulk Filter Remote Sensing Data using Google Earth Engine
 
