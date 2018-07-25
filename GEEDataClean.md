@@ -1,13 +1,5 @@
-Clean GEE Output Data
-================
-
 Reviewing GEE Output Data
 =========================
-
-The table below shows a summary of the GEE output data.
-
-Cleaning GEE Output Data
-========================
 
 Now we will navigate to the data exported by our GEE Script. We now have 31 Landsat 8 SR Images. These images have been clipped to a certain general boundary. We would like to reduce this boundary to all altitudes below 3,000 m a.m.s.l. Furthermore, we would also like to replace all 0 values in the images produced with `NA` values.
 
@@ -42,7 +34,7 @@ Manual Check and Refinements
 
 After doing this, out images are saved in the `/Cleaned_Images` directory. Now we can visualize these images to manually check for any possible issues. The following 5 images were ascertained to be defective and not suitable for further analysis. This is due to the presence of objects such as haze, and possibly inaccurate atmospheric correction. Their corresponding file names were: `LC81470382014047_6.tif`, `LC81470382014111_7.tif`, `LC81470382015258_19.tif`, `LC81470382017023_28.tif`, `LC81470382017055_29.tif`.
 
-![](/home/atreya/Desktop/Git/vegMonitor/Figures/Defective_Images.png)
+![](/img/Defective_Images.png)
 
 Summary
 =======
