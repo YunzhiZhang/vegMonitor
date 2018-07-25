@@ -10,7 +10,7 @@ The end of goal of this project is to generate vegetation cover classification i
 
 ## Guide to Methodologies for Ubuntu 16.04
 
-### 1. Bulk Filter Remote Sensing Data using Google Earth Engine
+### 1. Bulk Filter and Pre-Processing Remote Sensing Data using Google Earth Engine
 
 Firstly, we need to download relevant remote-sensing data for our purpose. The traditional means of going about this process would be to navigate to various data pproviders such as the USGS's [Earth-Explorer](https://earthexplorer.usgs.gov/) interface. Although this is a very interactive and comfortable interface, it does present us with some key limitations. For one, we are limited to how much we can query and filter large data before downloading it. This would mean we would need to download many GB's of data, only to use a few MB at the end. Next, we are also limited with how much data we can query at once. For example, the USGS Earth-Explorer interface only hosts ceratin datasets and perhaps not all the relevant ones. In order to access other datasets, we would need to navigate to another interface altogether. 
 
@@ -22,6 +22,6 @@ For a detailed look on how to acquire and pre-process remote sensing data, pleas
 
 [Still under development...]
 
-### 3. Vegetation Change Detection
+### 3. Vegetation Loss Detection
 
 [Still under development...]
