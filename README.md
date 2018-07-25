@@ -8,7 +8,7 @@ The study area of this project is [Dharamshala Tehsil](https://en.wikipedia.org/
 
 The end of goal of this project is to generate vegetation cover classification images of the study area from 2013-2017. With this images, we aim to develop a change detection technique that would indicate to us regions undergoing significant vegetation loss. These regions would then be flagged for further investigation.
 
-## Guide to Methodologies (Ubuntu 16.04)
+## Guide to Methodologies for Ubuntu 16.04
 
 ### 1. Bulk Filter Remote Sensing Data using Google Earth Engine
 
@@ -16,10 +16,12 @@ Firstly, we need to download relevant remote-sensing data for our purpose. The t
 
 In order to overcome these issues, we propose using the Google Earth Engine (GEE). The Google Earth Engine is essentially a Javascript-based API hosted on Google's infrastructure. This API allows us to query a large volume of Earth observation datasets and to pre-process them before downloading. This provides an efficient means of data-processing for our needs. Here, we choose to download the Landsat 8 Surface Reflectance data. 
 
-### 2. Cleaning GEE Data
+For a detailed look on how to acquire and pre-process remote sensing data, please refer to the following GitHub repository: https://github.com/AtreyaSh/geeBulkFilter
 
-For this section, please refer to the markdown file `GEEDataClean.md` with the following [link](GEEDataClean.md).
+### 2. Vegetation Classification
 
-### 3. Vegetation Classification and Change Detection
+[Still under development...]
+
+### 3. Vegetation Change Detection
 
 [Still under development...]
