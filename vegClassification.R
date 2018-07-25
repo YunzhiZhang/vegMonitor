@@ -9,11 +9,28 @@ library(rgdal)
 if(!require(caret)) install.packages("caret")
 library(caret)
 
-# change all namingg conventions to make them consistent
+### Issues ###
+
+## Priority
+
+# issue automating inputs in train aspect
+# work on making nicer genlogs
+# check if code can automatically parse responseCol from shapefile instead of manual input
+# undersample credit to Ali Santacruz
+
+# test function see how it works
+# add readme or package type functions
+# add documentation about format types
+
+## Extra
+
+# make R-base API for python API, might be counterintuitive but might work
+
+### Function ###
 
 # Developing vegetation classification function, can possibly rename later for more generic purposes
 
-vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, undersample, ntry, varImp, genLogs, writePath) {
+vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, undersample, ntry, varImp, genLogs, writePath, format) {
   
   if(is.null(imgStack)){
     stop("please indicate a path for imgStack with the corresponding filetype")
@@ -34,7 +51,7 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
     pred <- FALSE
     warning("no prediction shapefile path with .shp provided, carrying on")
   } else {
-    dLower  <- shapefile(predShapefile)
+    dLower <- shapefile(predShapefile)
     pred <- TRUE 
   }
   
@@ -44,7 +61,7 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
   }
   
   if(is.null(ntry)){
-    ntry <- 1000
+    ntry <- 500
     warning(paste("no ntree supplied, defaulting to ", ntry, sep = ""))
   }
   
@@ -59,12 +76,21 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
   }
   
   if(is.null(writePath)){
-    writePath = paste(getwd(), "/vegClassification/", sep = "")
+    writePath = paste(getwd(), "/vegClassification", sep = "")
     warning(paste("no write path supplied, defaulting to ", writePath, sep=""))
     
     if(!file.exists("./vegClassification")){
       dir.create("./vegClassification")
     }
+  } else if (!file.exists(writePath)) {
+    stop(paste("the directory ", writePath, " does not exist"))
+  } else if (substr(writePath, nchar(writePath), nchar(writePath)) == "/") {
+    writePath <- substr(writePath, 1, nchar(writePath)-1)
+  }
+  
+  if(is.null(format)){
+    format <- "GTiff"
+    warning(paste("no format provided, defaulting to ", format, sep=""))
   }
   
   training_image <- imgStack
@@ -120,15 +146,13 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
   } else training_bc <- image_train
   
   # Building the model with data partition
-  
+  # experiment inputting string into command
   ###
   imagemod_rf_1k <- train(as.factor(class) ~ B1 + B2 + B3 + B4 + B5 + B6 + B7, method = "rf", data = training_bc, ntree = ntry, importance = varImp)
   ###
   
   # Save the trained model, naming convention to change somehow
-  ###
-  saveRDS(imagemod_rf_1k, names(training_image)[1])
-  ###
+  saveRDS(imagemod_rf_1k, strsplit(names(s[[j]])[1], "[.]")[[1]][1])
   
   # Shows paramters like accuracy and kappa coefficient for internal OOB data
   imagemod_rf_1k
@@ -162,7 +186,5 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
   }
 
   # Save predicted image
-  ###
-  writeRaster(preds_rf2_1k, file.path(writePath, names(s[[j]])[1]), format = "GTiff", overwrite = TRUE)
-  ###
+  writeRaster(preds_rf2_1k, file.path(writePath, strsplit(names(s[[j]])[1], "[.]")[[1]][1]), format = format, overwrite = TRUE)
 }
