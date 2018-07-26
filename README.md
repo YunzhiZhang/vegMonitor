@@ -1,6 +1,6 @@
 # vegMonitor 
 
-## Investigating losses in vegetation cover using remote sensing data and the random forests algorithm
+## Investigating losses in vegetation cover using remote sensing data and the Random Forests algorithm
 
 This is a project which summarizes remote sensing data processing techniques in order to extract key vegetation data and indications about vegetation changes.
 
@@ -20,7 +20,7 @@ In order to overcome these issues, we propose using the Google Earth Engine (GEE
 
 For a detailed look on how to acquire and pre-process remote sensing data, please refer to the following GitHub repository: https://github.com/AtreyaSh/geeBulkFilter
 
-### 2. Supervised vegetation classification using field data and the random forests algorithm
+### 2. Supervised vegetation classification using field data and the Random Forests algorithm
 
 [Still under development...]
 
