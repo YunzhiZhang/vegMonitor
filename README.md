@@ -1,4 +1,6 @@
-# Investigating losses in vegetation cover using remote sensing data and the random forests algorithm
+# vegMonitor 
+
+## Investigating losses in vegetation cover using remote sensing data and the random forests algorithm
 
 This is a project which summarizes remote sensing data processing techniques in order to extract key vegetation data and indications about vegetation changes.
 
@@ -10,7 +12,7 @@ The end of goal of this project is to generate vegetation cover classification i
 
 ## Guide to methodologies for Ubuntu 16.04
 
-### 1. Bulk filter and pre-processing remote sensing data using Google Earth Engine
+### 1. Pre-processing remote sensing data using Google Earth Engine
 
 Firstly, we need to download relevant remote-sensing data for our purpose. The traditional means of going about this process would be to navigate to various data pproviders such as the USGS's [Earth-Explorer](https://earthexplorer.usgs.gov/) interface. Although this is a very interactive and comfortable interface, it does present us with some key limitations. For one, we are limited to how much we can query and filter large data before downloading it. This would mean we would need to download many GB's of data, only to use a few MB at the end. Next, we are also limited with how much data we can query at once. For example, the USGS Earth-Explorer interface only hosts certain datasets and perhaps not all the relevant ones. In order to access other datasets, we would need to navigate to another interface altogether. 
 
@@ -18,10 +20,10 @@ In order to overcome these issues, we propose using the Google Earth Engine (GEE
 
 For a detailed look on how to acquire and pre-process remote sensing data, please refer to the following GitHub repository: https://github.com/AtreyaSh/geeBulkFilter
 
-### 2. Vegetation classification
+### 2. Vegetation classification using field data and the random forests algorithm
 
 [Still under development...]
 
-### 3. Vegetation loss detection
+### 3. Vegetation loss detection using a rasterized Mann-Whitney technique
 
 [Still under development...]
