@@ -1,4 +1,4 @@
-# Load libraries needed, install if not present
+### load libraries ###
 
 if(!require(raster)) install.packages("raster")
 library(raster)
@@ -9,39 +9,25 @@ library(rgdal)
 if(!require(caret)) install.packages("caret")
 library(caret)
 
-### Issues ###
+if(!require(snow)) install.packages("snow")
+library(snow)
 
-## Priority
+### function ###
 
-# issue automating inputs in train aspect
-# work on making nicer genlogs
-# check if code can automatically parse responseCol from shapefile instead of manual input
-# undersample credit to Ali Santacruz
-
-# test function see how it works
-# add readme or package type functions
-# add documentation about format types
-
-## Extra
-
-# make R-base API for python API, might be counterintuitive but might work
-
-### Function ###
-
-# Developing vegetation classification function, can possibly rename later for more generic purposes
-
-vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, undersample, ntry, varImp, genLogs, writePath, format) {
+vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, undersample, ntry, varImp, genLogs, writePath, format) {
+  
+  ### check dependencies ###
   
   if(is.null(imgStack)){
-    stop("please indicate a path for imgStack with the corresponding filetype")
+    stop("please indicate a directory ")
   } else {
-    s <- stack(imgStack)
+    s <- lapply(imgList, stack)
   }
   
   if(is.null(baseShapefile)){
     stop("please indicate the path of the base shapefile with .shp ending")
   } else shape_pointData <- shapefile(baseShapefile)
-
+  
   if(is.null(responseCol)){
     responseCol = "OBJECTID"
     warning(paste("no responseCol supplied, defaulting to ", responseCol, sep = ""))
@@ -93,98 +79,123 @@ vegClassify <- function(imgStack, baseShapefile, responseCol, predShapefile, und
     warning(paste("no format provided, defaulting to ", format, sep=""))
   }
   
-  training_image <- imgStack
+  ### main loop ###
   
-  # To make band names shorter and create a smaller prediction image
-  names(training_image) <- c(paste0("B", 1:length(names(training_image)), coll = ""))
+  start <- proc.time()
+  pb.overall <- txtProgressBar(min = 0, max = length(s), initial = 0, char = "=",
+                               width = options()$width, style = 3, file = "")
   
-  if(pred==TRUE){
-    prediction_image <- mask(training_image, dLower)
-  }
-  
-  # Extract values of raster pixels based on vegetation class polygons
-  image_dfall = data.frame(matrix(vector(), nrow = 0, ncol = length(names(training_image)) + 1))
-  for (i in 1:length(unique(shape_pointData[[responseCol]]))){
-    category <- unique(shape_pointData[[responseCol]])[i]
-    categorymap <- shape_pointData[shape_pointData[[responseCol]] == category,]
-    dataSet <- extract(training_image, categorymap)
-    dataSet <- dataSet[!unlist(lapply(dataSet, is.null))]
+  for(i in 1:length(s)){
     
-    if(is(shape_pointData, "SpatialPointsDataFrame")){
-      dataSet <- cbind(dataSet, class = as.numeric(category))
-      image_dfall <- rbind(image_dfall, dataSet)
+    training_image <- s[[i]]
+    
+    names(training_image) <- c(paste0("B", 1:length(names(training_image)), coll = ""))
+    
+    if(pred==TRUE){
+      prediction_image <- mask(training_image, dLower)
     }
     
-    if(is(shape_pointData, "SpatialPolygonsDataFrame")){
-      dataSet <- lapply(dataSet, function(x){cbind(x, class = as.numeric(rep(category, nrow(x))))})
-      df <- do.call("rbind", dataSet)
-      image_dfall <- rbind(image_dfall, df)
-    }
-  }
-  
-  # To create data partition for training and test dataset
-  image_inBuild <- createDataPartition(y = image_dfall$class, p = 0.7, list = FALSE)
-  image_train <- image_dfall[image_inBuild,] #training data
-  image_train <- image_train[complete.cases(image_train), ]
-  image_valid <- image_dfall[-image_inBuild,] #test data, a.k.a validation data
-  image_valid <- image_valid[complete.cases(image_valid), ]
-  
-  if(undersample == TRUE){
-    # To undersample training dataset for balanced training data
-    undersample_ds <- function(x, classCol, nsamples_class){
-      for (k in 1:length(unique(x[, classCol]))){
-        class.k <- unique(x[, classCol])[k]
-        if((sum(x[, classCol] == class.k) - nsamples_class) != 0){
-          x <- x[-sample(which(x[, classCol] == class.k),
-                         sum(x[, classCol] == class.k) - nsamples_class), ]
-        }
+    image_dfall = data.frame(matrix(vector(), nrow = 0, ncol = length(names(training_image)) + 1))
+    for (i in 1:length(unique(shape_pointData[[responseCol]]))){
+      category <- unique(shape_pointData[[responseCol]])[i]
+      categorymap <- shape_pointData[shape_pointData[[responseCol]] == category,]
+      dataSet <- extract(training_image, categorymap)
+      dataSet <- dataSet[!unlist(lapply(dataSet, is.null))]
+      
+      if(is(shape_pointData, "SpatialPointsDataFrame")){
+        dataSet <- cbind(dataSet, class = as.numeric(category))
+        image_dfall <- rbind(image_dfall, dataSet)
       }
-      return(x)
+      
+      if(is(shape_pointData, "SpatialPolygonsDataFrame")){
+        dataSet <- lapply(dataSet, function(x){cbind(x, class = as.numeric(rep(category, nrow(x))))})
+        df <- do.call("rbind", dataSet)
+        image_dfall <- rbind(image_dfall, df)
+      }
     }
     
-    training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
-  } else training_bc <- image_train
-  
-  # Building the model with data partition
-  # experiment inputting string into command
-  ###
-  imagemod_rf_1k <- train(as.factor(class) ~ B1 + B2 + B3 + B4 + B5 + B6 + B7, method = "rf", data = training_bc, ntree = ntry, importance = varImp)
-  ###
-  
-  # Save the trained model, naming convention to change somehow
-  saveRDS(imagemod_rf_1k, strsplit(names(s[[j]])[1], "[.]")[[1]][1])
-  
-  # Shows paramters like accuracy and kappa coefficient for internal OOB data
-  imagemod_rf_1k
-  
-  if(varImp==TRUE){
-    # View the variable importance of the RF model
-    varImp(imagemod_rf_1k)[1]  
-  }
+    image_inBuild <- createDataPartition(y = image_dfall$class, p = 0.7, list = FALSE)
+    image_train <- image_dfall[image_inBuild,]
+    image_train <- image_train[complete.cases(image_train), ]
+    image_valid <- image_dfall[-image_inBuild,]
+    image_valid <- image_valid[complete.cases(image_valid), ]
+    
+    if(undersample == TRUE){
+      undersample_ds <- function(x, classCol, nsamples_class){
+        for (k in 1:length(unique(x[, classCol]))){
+          class.k <- unique(x[, classCol])[k]
+          if((sum(x[, classCol] == class.k) - nsamples_class) != 0){
+            x <- x[-sample(which(x[, classCol] == class.k),
+                           sum(x[, classCol] == class.k) - nsamples_class), ]
+          }
+        }
+        return(x)
+      }
+      
+      training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
+    } else training_bc <- image_train
+    
+    # Building the model with data partition
+    # experiment inputting string into command
+    ###
+    image_rf <- train(as.factor(class) ~ B1 + B2 + B3 + B4 + B5 + B6 + B7, method = "rf", data = training_bc, ntree = ntry, importance = varImp)
+    ###
+    
+    saveRDS(image_rf, strsplit(names(s[[i]])[1], "[.]")[[1]][1])
+    
+    # Shows paramters like accuracy and kappa coefficient for internal OOB data
+    image_rf
+    
+    if(varImp==TRUE){
+      varImp(image_rf)[1]  
+    }
+    
+    # Prediction on test dataset based on trained model
+    imagepred_valid <- predict(image_rf, image_valid)
+    
+    # Confusion matrix of trained model on test dataset; provides accuracy
+    confusionMatrix1 <- confusionMatrix(imagepred_valid,image_valid$class)$overall[1]
 
-  # Prediction on test dataset based on trained model
-  imagepred_valid_1k <- predict(imagemod_rf_1k, image_valid)
-  
-  # Confusion matrix of trained model on test dataset; provides accuracy
-  confusionMatrix1 <- confusionMatrix(imagepred_valid_1k,image_valid$class)$overall[1]
-  
-  # Confusion matrix of trained model on test dataset; provides kappa coefficient
-  confusionMatrix3 <- confusionMatrix(imagepred_valid_1k, image_valid$class)$overall[2]
-  
-  # Confusion matrix of trained model on test dataset; provides user's accuracy by class
-  confusionMatrix2 <- confusionMatrix(imagepred_valid_1k, image_valid$class)$byClass[,1]
-  
-  # Apply the RF model to predict the entire image
-  if(pred == TRUE){
-    beginCluster()
-    preds_rf2_1k <- clusterR(prediction_image, raster::predict, args = list(model = imagemod_rf_1k))
-    endCluster()
-  } else {
-    beginCluster()
-    preds_rf2_1k <- clusterR(training_image, raster::predict, args = list(model = imagemod_rf_1k))
-    endCluster()
+    # Confusion matrix of trained model on test dataset; provides kappa coefficient
+    confusionMatrix2 <- confusionMatrix(imagepred_valid, image_valid$class)$overall[2]
+    
+    # Confusion matrix of trained model on test dataset; provides user's accuracy by class
+    confusionMatrix3 <- confusionMatrix(imagepred_valid, image_valid$class)$byClass[,1]
+      
+    if(pred == TRUE){
+      beginCluster()
+      pred_rf <- clusterR(prediction_image, raster::predict, args = list(model = image_rf))
+      endCluster()
+    } else {
+      beginCluster()
+      pred_rf <- clusterR(training_image, raster::predict, args = list(model = image_rf))
+      endCluster()
+    }
+    
+    writeRaster(pred_rf, file.path(writePath, strsplit(names(s[[i]])[1], "[.]")[[1]][1]), format = format, overwrite = TRUE)
+    
+    Sys.sleep(1/100)
+    setTxtProgressBar(pb.overall, i, title = NULL, label = NULL)
   }
-
-  # Save predicted image
-  writeRaster(preds_rf2_1k, file.path(writePath, strsplit(names(s[[j]])[1], "[.]")[[1]][1]), format = format, overwrite = TRUE)
+  end <- proc.time()
+  print(end-start)
+  close(pb.overall)
+  return(0)
 }
+
+### Issues ###
+
+## Priority
+
+# issue automating inputs in train aspect
+# work on making nicer genlogs
+# check if code can automatically parse responseCol from shapefile instead of manual input
+# undersample credit to Ali Santacruz
+
+# test function see how it works
+# add readme or package type functions
+# add documentation about format types
+
+## Extra
+
+# make R-base API for python API, might be counterintuitive but might work
