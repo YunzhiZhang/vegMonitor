@@ -22,8 +22,12 @@ For a detailed look on how to acquire and pre-process remote sensing data, pleas
 
 ### 2. Supervised vegetation classification using field data and the Random Forests algorithm
 
-[Still under development...]
+Complete user-specific script can be found in the `randomForests.R` file or here: https://github.com/AtreyaSh/vegMonitor/blob/master/randomForests.R
+
+A more generic script in the form of a useful function is under development and can be found in `vegClassification.R`.
 
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
-[Still under development...]
+Complete user-specific script can be found in the `changeDetection.R` file or here: https://github.com/AtreyaSh/vegMonitor/blob/master/changeDetection.R
+
+A more generic script in the form of a useful function is under development and can be found in `vegLossDetection.R`.
