@@ -20,7 +20,7 @@ In order to overcome these issues, we propose using the Google Earth Engine (GEE
 
 For a detailed look on how to acquire and pre-process remote sensing data, please refer to the following GitHub repository: https://github.com/AtreyaSh/geeBulkFilter
 
-### 2. Supervised classification on vegetation using field data and the random forests algorithm
+### 2. Supervised vegetation classification using field data and the random forests algorithm
 
 [Still under development...]
 
