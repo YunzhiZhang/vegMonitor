@@ -25,7 +25,7 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
   ### check dependencies ###
   
   if(is.null(imgList)){
-    stop("please indicate a directory ")
+    stop("please indicate a list of images with absolute path names and endings")
   } else {
     s <- lapply(imgList, stack)
   }
