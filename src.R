@@ -1,17 +1,16 @@
-imgList <- list.files(paste(getwd(), "/input/climg", sep=""), full.names = TRUE)[1:3]
+imgList <- list.files(paste(getwd(), "/input/climg", sep=""), pattern = ".tif$", full.names = TRUE)
 baseShapefile <- "./input/shp/Sum_UTM43N_4U_Classes.shp"
-bands = c(3:5)
+bands = c(1:7)
 responseCol = NULL
 predShapefile = "./input/shp/DL_Lower_UTM43N.shp"
 undersample = NULL
 ntry = 1000
 genLogs = NULL
 writePath = NULL
-format = NULLr
+format = NULL
 
 source("vegClassification.R", encoding = "UTF-8")
 
-options(warn = 1)
 vegClassify(imgList, baseShapefile, responseCol, predShapefile, bands, undersample, ntry, genLogs, writePath, format)
 
 ### Issues ###

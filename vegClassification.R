@@ -149,7 +149,8 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     
     if(genLogs==TRUE){
       
-      tmpVarImp[[i]] <- rbind(as.character(i), varImp(image_rf)$importance)
+      tmpVarImp[[i]] <- varImp(image_rf)$importance
+      rownames(tmpVarImp[[i]]) <- paste(rownames(varImp(image_rf)$importance), ".", toString(i), sep="") 
       tmpResults[[i]] <- cbind(image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),],nrow(training_bc))
       names(tmpResults[[i]])[length(names(tmpResults[[i]]))] <- "trainingPixels"
       
@@ -185,7 +186,7 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     tmpResults <- do.call("rbind", lapply(tmpResults, function(x) return(x)))
     tmpPred <- do.call("rbind", lapply(tmpPred, function(x) return(x)))
     
-    write.csv(tmpVarImp, file.path(writePath,"log_VarImp.csv"), row.names = FALSE)
+    write.csv(tmpVarImp, file.path(writePath,"log_VarImp.csv"), row.names = TRUE)
     write.csv(tmpResults, file.path(writePath,"log_Results.csv"), row.names = FALSE)
     write.csv(tmpPred, file.path(writePath,"log_Pred.csv"), row.names = FALSE)
   }
