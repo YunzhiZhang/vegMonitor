@@ -1,11 +1,11 @@
 imgVector <- list.files(paste(getwd(), "/input/climg", sep=""), pattern = ".tif$", full.names = TRUE)[c(1,2)]
 baseShapefile <- "./input/shp/Sum_UTM43N_4U_Classes.shp"
-bands = c(1:7)
+bands = NULL
 responseCol = NULL
 predShapefile = "./input/shp/DL_Lower_UTM43N.shp"
 undersample = NULL
 predImg = NULL
-ntry = 500
+ntry = NULL
 genLogs = NULL
 writePath = NULL
 format = NULL
