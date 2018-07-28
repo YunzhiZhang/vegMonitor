@@ -12,7 +12,7 @@ format = NULL
 
 source("vegClassification.R", encoding = "UTF-8")
 
-vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format)
+vegClassify(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg, ntry, genLogs, writePath, format)
 
 ### Issues ###
 

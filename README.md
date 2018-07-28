@@ -25,21 +25,25 @@ For a detailed look on how to acquire and pre-process remote sensing data, pleas
 `vegClassification.R` is a generic R-script containing a useful `vegClassify` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegClassification.R
 
 ```{r}
-vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, 
+vegClassify(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg,
             ntry, genLogs, writePath, format)
 ```
 
 **Arguments**
 
+Mandatory:
+
 1. `imgVector` is a vector containing the absolute string paths with endings (eg. "/path/to/folder/xyz.tif") of single or multi-band images that are to be processed.
 
 2. `baseShapefile` is a string path with ".shp" ending that contains polygons or point data for training the random forest model.
 
-3. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to "OBJECTID".
+3. `bands` is a numerical vector containing the necessary bands used for training.
 
-4. `predShapefile` is a string path with ".shp" ending that contains polygon(s) which will mask the training image. Resulting masked image can be used for prediction. Will be ignored if no input provided.
+Optional:
 
-5. `bands` is a numerical vector containing the necessary bands used for training.
+4. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to "OBJECTID".
+
+5. `predShapefile` is a string path with ".shp" ending that contains polygon(s) which will mask the training image. Resulting masked image can be used for prediction. Will be ignored if no input provided.
 
 6. `undersample` is a boolean which conducts undersampling on the training data to create a balanced training dataset. Defaults to "TRUE".
 

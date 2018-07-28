@@ -22,7 +22,7 @@ source("undersample.R", encoding = "UTF-8")
 
 ## function ###
 
-vegClassify <- function(imgVector, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format) {
+vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg, ntry, genLogs, writePath, format) {
   
   ### check dependencies ###
   
