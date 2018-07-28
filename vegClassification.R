@@ -22,14 +22,14 @@ source("undersample.R", encoding = "UTF-8")
 
 ## function ###
 
-vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format) {
+vegClassify <- function(imgVector, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format) {
   
   ### check dependencies ###
   
-  if(is.null(imgList)){
+  if(is.null(imgVector)){
     stop("please indicate a list of images with absolute path names and endings")
   } else {
-    s <- lapply(imgList, stack)
+    s <- lapply(imgVector, stack)
   }
   
   if(is.null(baseShapefile)){
