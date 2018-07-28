@@ -18,9 +18,7 @@ vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersa
 
 ## Priority
 
-# work on making nicer genlogs
 # add readme or package type functions
-# add documentation about format types
 
 ## Extra
 

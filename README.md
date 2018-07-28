@@ -22,7 +22,7 @@ For a detailed look on how to acquire and pre-process remote sensing data, pleas
 
 ### 2. Supervised vegetation classification using field data and the Random Forests algorithm
 
-Generic R-script with useful function is `vegClassification.R`: https://github.com/AtreyaSh/vegMonitor/blob/master/vegClassification.R
+`vegClassification.R` is a generic R-script containing a useful `vegClassify` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegClassification.R
 
 ```{r}
 vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, 
@@ -57,4 +57,4 @@ vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersa
 
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
-Generic R-script `vegLossDetection.R` with a useful function is still under development.
+`vegLossDetection.R` is a generic R-script with a useful function. This is still under development.
