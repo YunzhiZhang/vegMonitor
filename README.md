@@ -39,7 +39,7 @@ vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersa
 
 4. `predShapefile` is a string path with ".shp" ending that contains polygon(s) which will mask the training image. Resulting masked image can be used for prediction. Will be ignored if no input provided.
 
-5. `bands` is a numerical vector containing the necessary bands used for training. Defaults to all bands in image if no input provided.
+5. `bands` is a numerical vector containing the necessary bands used for training.
 
 6. `undersample` is a boolean which conducts undersampling on the training data to create a balanced training dataset. Defaults to "TRUE".
 
