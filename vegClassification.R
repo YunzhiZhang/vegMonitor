@@ -20,7 +20,7 @@ library(e1071)
 
 ## function ###
 
-vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, bands, undersample, ntry, genLogs, writePath, format) {
+vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format) {
   
   ### check dependencies ###
   
@@ -44,7 +44,7 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     warning("no prediction shapefile path with .shp provided, carrying on...")
   } else {
     dLower <- shapefile(predShapefile)
-    pred <- TRUE 
+    pred <- TRUE
   }
   
   if(is.null(bands)){
@@ -54,6 +54,11 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
   if(is.null(undersample)){
     undersample <- TRUE
     warning(paste("no undersample supplied, defaulting to ", undersample, sep = ""))
+  }
+  
+  if(is.null(predImg)){
+    predImg <- TRUE
+    warning(paste("no predImg supplied, defaulting to ", predImg, sep = ""))
   }
   
   if(is.null(ntry)){
@@ -75,6 +80,12 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
   if(is.null(writePath)){
     writePath = paste(getwd(), "/output/vegClassification", sep = "")
     warning(paste("no writePath supplied, defaulting to ", writePath, sep=""))
+    
+    if(!file.exists(writePath)){
+      warning(paste(writePath, " does not exist, creating directory instead...", sep=""))
+      dir.create(writePath)
+    }
+    
   } else if (substr(writePath, nchar(writePath), nchar(writePath)) == "/") {
     writePath <- substr(writePath, 1, nchar(writePath)-1)
     if (!file.exists(writePath)) {
@@ -100,10 +111,6 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     training_image <- s[[i]]
     
     names(training_image) <- c(paste0("B", 1:length(names(training_image)), coll = ""))
-    
-    if(pred==TRUE){
-      prediction_image <- mask(training_image, dLower)
-    }
     
     image_dfall = data.frame(matrix(vector(), nrow = 0, ncol = length(names(training_image)) + 1))
     for (j in 1:length(unique(shape_pointData[[responseCol]]))){
@@ -146,13 +153,15 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     } else training_bc <- image_train
     
     image_rf <- train(training_bc[,bands], as.factor(training_bc[,ncol(training_bc)]), method = "rf", ntree = ntry, importance = genLogs)
+    saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))
     
     if(genLogs==TRUE){
-      
       tmpVarImp[[i]] <- varImp(image_rf)$importance
-      rownames(tmpVarImp[[i]]) <- paste(rownames(varImp(image_rf)$importance), ".", toString(i), sep="") 
+      rownames(tmpVarImp[[i]]) <- paste(strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".", rownames(varImp(image_rf)$importance), sep="") 
+      
       tmpResults[[i]] <- cbind(image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),],nrow(training_bc))
       names(tmpResults[[i]])[length(names(tmpResults[[i]]))] <- "trainingPixels"
+      rownames(tmpResults[[i]]) <- strsplit(names(s[[i]])[1], "[.]")[[1]][1]
       
       imagepred_valid <- predict(image_rf, image_valid)
       Accuracy <- confusionMatrix(imagepred_valid,as.factor(image_valid$class))$overall[1]
@@ -161,21 +170,22 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
       
       tmpPred[[i]] <- cbind(Accuracy, Kappa, byClass, nrow(image_valid))
       colnames(tmpPred[[i]])[length(colnames(tmpPred[[i]]))] <- "testPixels"
-      row.names(tmpPred[[i]]) <- NULL
+      rownames(tmpPred[[i]]) <- strsplit(names(s[[i]])[1], "[.]")[[1]][1]
     }
     
-    if(pred == TRUE){
+    if(predImg == TRUE){
+      if(pred == TRUE){
+      prediction_image <- mask(training_image, dLower)
       beginCluster()
       pred_rf <- clusterR(prediction_image, raster::predict, args = list(model = image_rf))
       endCluster()
-    } else {
+    } else if (pred == FALSE){
       beginCluster()
       pred_rf <- clusterR(training_image, raster::predict, args = list(model = image_rf))
       endCluster()
     }
-    
-    saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))
-    writeRaster(pred_rf, file.path(writePath, strsplit(names(s[[i]])[1], "[.]")[[1]][1]), format = format, overwrite = TRUE)
+      writeRaster(pred_rf, file.path(writePath, strsplit(names(s[[i]])[1], "[.]")[[1]][1]), format = format, overwrite = TRUE)
+    }
     
     Sys.sleep(1/100)
     setTxtProgressBar(pb.overall, i, title = NULL, label = NULL)
@@ -187,8 +197,8 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     tmpPred <- do.call("rbind", lapply(tmpPred, function(x) return(x)))
     
     write.csv(tmpVarImp, file.path(writePath,"log_VarImp.csv"), row.names = TRUE)
-    write.csv(tmpResults, file.path(writePath,"log_Results.csv"), row.names = FALSE)
-    write.csv(tmpPred, file.path(writePath,"log_Pred.csv"), row.names = FALSE)
+    write.csv(tmpResults, file.path(writePath,"log_Results.csv"), row.names = TRUE)
+    write.csv(tmpPred, file.path(writePath,"log_Pred.csv"), row.names = TRUE)
   }
   
   end <- proc.time()
