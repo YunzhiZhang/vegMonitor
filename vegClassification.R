@@ -18,6 +18,8 @@ library(randomForest)
 if(!require(e1071)) install.packages("e1071")
 library(e1071)
 
+source("undersample.R", encoding = "UTF-8")
+
 ## function ###
 
 vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, bands, undersample, predImg, ntry, genLogs, writePath, format) {
@@ -138,17 +140,6 @@ vegClassify <- function(imgList, baseShapefile, responseCol, predShapefile, band
     image_valid <- image_valid[complete.cases(image_valid), ]
     
     if(undersample == TRUE){
-      undersample_ds <- function(x, classCol, nsamples_class){
-        for (k in 1:length(unique(x[, classCol]))){
-          class.k <- unique(x[, classCol])[k]
-          if((sum(x[, classCol] == class.k) - nsamples_class) != 0){
-            x <- x[-sample(which(x[, classCol] == class.k),
-                           sum(x[, classCol] == class.k) - nsamples_class), ]
-          }
-        }
-        return(x)
-      }
-      
       training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
     } else training_bc <- image_train
     

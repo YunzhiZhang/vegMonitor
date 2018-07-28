@@ -19,7 +19,6 @@ vegClassify(imgList, baseShapefile, responseCol, predShapefile, bands, undersamp
 ## Priority
 
 # work on making nicer genlogs
-# separate undersample function and give credit to Ali Santacruz
 # add readme or package type functions
 # add documentation about format types
 
