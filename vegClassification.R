@@ -36,6 +36,10 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     stop("please indicate the path of the base shapefile with .shp ending")
   } else shape_pointData <- shapefile(baseShapefile)
   
+  if(is.null(bands)){
+    stop("please specify a vector containing the bands that should be used for training")
+  }
+  
   if(is.null(responseCol)){
     responseCol = "OBJECTID"
     warning(paste("no responseCol supplied, defaulting to ", responseCol, sep = ""))
@@ -47,10 +51,6 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
   } else {
     dLower <- shapefile(predShapefile)
     pred <- TRUE
-  }
-  
-  if(is.null(bands)){
-    stop("please specify a vector containing the bands that should be used for training")
   }
   
   if(is.null(undersample)){
