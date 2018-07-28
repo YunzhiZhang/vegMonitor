@@ -35,7 +35,7 @@ vegClassify(imgVector, baseShapefile, responseCol, predShapefile, bands, undersa
 
 2. `baseShapefile` is a string path with ".shp" ending that contains polygons or point data for training the random forest model.
 
-3. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to `OBJECTID`.
+3. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to "OBJECTID".
 
 4. `predShapefile` is a string path with ".shp" ending that contains polygon(s) which will mask the training image. Resulting masked image can be used for prediction. Will be ignored if no input provided.
 
