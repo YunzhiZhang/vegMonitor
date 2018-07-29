@@ -13,13 +13,3 @@ format = NULL
 source("vegClassification.R", encoding = "UTF-8")
 
 vegClassify(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg, ntry, genLogs, writePath, format)
-
-### Issues ###
-
-## Priority
-
-# add readme or package type functions
-
-## Extra
-
-# make R-base API for python API, might be counterintuitive but might work

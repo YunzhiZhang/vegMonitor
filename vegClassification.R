@@ -115,6 +115,12 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     
     names(training_image) <- c(paste0("B", 1:length(names(training_image)), coll = ""))
     
+    if(allBands == TRUE){
+      bands <- c(1:length(names(training_image)))
+    }
+    
+    training_image <- training_image[[bands]]
+    
     image_dfall = data.frame(matrix(vector(), nrow = 0, ncol = length(names(training_image)) + 1))
     for (j in 1:length(unique(shape_pointData[[responseCol]]))){
       category <- unique(shape_pointData[[responseCol]])[j]
@@ -142,13 +148,10 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     
     if(undersample == TRUE){
       training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
+      image_valid <- undersample_ds(image_valid, "class", min(table(image_valid$class)))
     } else training_bc <- image_train
     
-    if(allBands == TRUE){
-      bands <- c(1:length(names(training_image)))
-    }
-    
-    image_rf <- train(training_bc[,bands], as.factor(training_bc[,ncol(training_bc)]), method = "rf", ntree = ntry, importance = genLogs)
+    image_rf <- train(training_bc[,c(1:(ncol(training_bc)-1))], as.factor(training_bc[,ncol(training_bc)]), method = "rf", ntree = ntry, importance = genLogs)
     saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))
     
     if(genLogs==TRUE){
