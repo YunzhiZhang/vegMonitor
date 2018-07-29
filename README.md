@@ -57,7 +57,7 @@ Optional:
 
 11. `format` is a string which points how the resulting predicted raster should be written. Defaults to "GTiff".
 
-    Other possibilities are listed here: https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/writeRaster
+    Other possibilities for `format` are listed here: https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/writeRaster
 
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
