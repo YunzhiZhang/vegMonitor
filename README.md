@@ -39,7 +39,7 @@ Mandatory:
 
 Optional:
 
-3. `bands` is a numerical vector containing the necessary bands used for training. The length of `bands` must be greater than 1. Defaults to all bands  the age.
+3. `bands` is a numerical vector containing the necessary bands used for training. The length of `bands` must be greater than 1. Defaults to all bands in the image.
 
 4. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to "OBJECTID".
 
