@@ -92,10 +92,10 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
   } else if (substr(writePath, nchar(writePath), nchar(writePath)) == "/") {
     writePath <- substr(writePath, 1, nchar(writePath)-1)
     if (!file.exists(writePath)) {
-      stop(paste("the directory ", writePath, " does not exist"))
+      stop(paste("the directory ", writePath, " does not exist", sep=""))
     }
   } else if (!file.exists(writePath)) {
-    stop(paste("the directory ", writePath, " does not exist"))
+    stop(paste("the directory ", writePath, " does not exist", sep=""))
   }
   
   if(is.null(format)){
