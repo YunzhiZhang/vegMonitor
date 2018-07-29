@@ -128,6 +128,11 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
       dataSet <- extract(training_image, categorymap)
       dataSet <- dataSet[!unlist(lapply(dataSet, is.null))]
       
+      if(length(bands)==1){
+        dataSet[[1]] <- as.matrix(dataSet[[1]])
+        colnames(dataSet[[1]]) <- names(training_image)
+      }
+      
       if(is(shape_pointData, "SpatialPointsDataFrame")){
         dataSet <- cbind(dataSet, class = as.numeric(category))
         image_dfall <- rbind(image_dfall, dataSet)
@@ -138,20 +143,20 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
         df <- do.call("rbind", dataSet)
         image_dfall <- rbind(image_dfall, df)
       }
+      
+      image_dfall <- image_dfall[complete.cases(image_dfall),]
     }
     
     image_inBuild <- createDataPartition(y = image_dfall$class, p = 0.7, list = FALSE)
     image_train <- image_dfall[image_inBuild,]
-    image_train <- image_train[complete.cases(image_train), ]
     image_valid <- image_dfall[-image_inBuild,]
-    image_valid <- image_valid[complete.cases(image_valid), ]
     
     if(undersample == TRUE){
       image_train <- undersample_ds(image_train, "class", min(table(image_train$class)))
       image_valid <- undersample_ds(image_valid, "class", min(table(image_valid$class)))
     }
     
-    image_rf <- train(image_train[,c(1:(ncol(image_train)-1))], as.factor(image_train[,ncol(image_train)]), method = "rf", ntree = ntry, importance = genLogs)
+    image_rf <- train(image_train[,c(1:(ncol(image_train)-1)), drop=FALSE], as.factor(image_train[,ncol(image_train)]), method = "rf", ntree = ntry, importance = genLogs)
     saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))
     
     if(genLogs==TRUE){
