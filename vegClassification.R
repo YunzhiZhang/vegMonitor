@@ -147,18 +147,18 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     image_valid <- image_valid[complete.cases(image_valid), ]
     
     if(undersample == TRUE){
-      training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
+      image_train <- undersample_ds(image_train, "class", min(table(image_train$class)))
       image_valid <- undersample_ds(image_valid, "class", min(table(image_valid$class)))
-    } else training_bc <- image_train
+    }
     
-    image_rf <- train(training_bc[,c(1:(ncol(training_bc)-1))], as.factor(training_bc[,ncol(training_bc)]), method = "rf", ntree = ntry, importance = genLogs)
+    image_rf <- train(image_train[,c(1:(ncol(image_train)-1))], as.factor(image_train[,ncol(image_train)]), method = "rf", ntree = ntry, importance = genLogs)
     saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))
     
     if(genLogs==TRUE){
       tmpVarImp[[i]] <- varImp(image_rf)$importance
       rownames(tmpVarImp[[i]]) <- paste(strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".", rownames(varImp(image_rf)$importance), sep="") 
       
-      tmpResults[[i]] <- cbind(image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),],nrow(training_bc))
+      tmpResults[[i]] <- cbind(image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),],nrow(image_train))
       names(tmpResults[[i]])[length(names(tmpResults[[i]]))] <- "trainingPixels"
       rownames(tmpResults[[i]]) <- strsplit(names(s[[i]])[1], "[.]")[[1]][1]
       
