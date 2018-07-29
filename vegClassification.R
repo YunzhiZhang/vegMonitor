@@ -37,8 +37,9 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
   } else shape_pointData <- shapefile(baseShapefile)
   
   if(is.null(bands)){
-    stop("please specify a vector containing the bands that should be used for training")
-  }
+    warning("no bands specified for training, defaulting to all bands")
+    allBands <- TRUE
+  } else allBands <- FALSE
   
   if(is.null(responseCol)){
     responseCol = "OBJECTID"
@@ -142,6 +143,10 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     if(undersample == TRUE){
       training_bc <- undersample_ds(image_train, "class", min(table(image_train$class)))
     } else training_bc <- image_train
+    
+    if(allBands == TRUE){
+      bands <- c(1:length(names(training_image)))
+    }
     
     image_rf <- train(training_bc[,bands], as.factor(training_bc[,ncol(training_bc)]), method = "rf", ntree = ntry, importance = genLogs)
     saveRDS(image_rf, paste(writePath, "/", strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".rds", sep = ""))

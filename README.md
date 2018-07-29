@@ -37,9 +37,9 @@ Mandatory:
 
 2. `baseShapefile` is a string path with ".shp" ending that contains polygons or point data for training the random forest model.
 
-3. `bands` is a numerical vector containing the necessary bands used for training.
-
 Optional:
+
+3. `bands` is a numerical vector containing the necessary bands used for training. Defaults to all bands in image.
 
 4. `responseCol` is a string that points the algorithm to the feature in `baseShapefile` that is needed for training. Defaults to "OBJECTID".
 
