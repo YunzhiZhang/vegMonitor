@@ -35,7 +35,7 @@ Mandatory:
 
 1. `imgVector` is a vector containing the absolute string paths with endings (eg. "/path/to/folder/xyz.tif") of single or multi-band images that are to be processed.
 
-2. `baseShapefile` is a string path with ".shp" ending that contains polygons or point data for training the random forest model.
+2. `baseShapefile` is a string path with ".shp" ending that contains polygons or point data for training the random forest model. In this case, the shapefile contains data collected during field work.
 
 Optional:
 
