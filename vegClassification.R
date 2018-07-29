@@ -18,7 +18,7 @@ library(randomForest)
 if(!require(e1071)) install.packages("e1071")
 library(e1071)
 
-source("undersample.R", encoding = "UTF-8")
+source("./aux/undersample.R", encoding = "UTF-8")
 
 ## function ###
 
