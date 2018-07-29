@@ -1,5 +1,3 @@
-# Still under development
-
 ### load libraries ###
 
 if(!require(raster)) install.packages("raster")
@@ -29,6 +27,8 @@ vegLossDetection <- function(imgVector, grouping, test, pval, directions, genLog
   
   if(is.null(grouping)){
     stop("please specify a list of vectors containing the indices of images to be grouped")
+  } else if(!is.list(grouping)){
+    stop("please input grouping as a list of vectors")
   }
   
   if(is.null(test)){
@@ -80,24 +80,9 @@ vegLossDetection <- function(imgVector, grouping, test, pval, directions, genLog
 
   g <- lapply(grouping, function(x) return(stack(imgVector[x])))
   f <- lapply(pairing(grouping), function(x) return(stack(imgVector[x])))
+  gNA <- lapply(g, is.na)
   
-  ### under development ###
-  
-  nacount <- sum(is.na(s))
-  nacount2013 <- sum(is.na(s2013))
-  nacount2014 <- sum(is.na(s2014))
-  nacount2015 <- sum(is.na(s2015))
-  nacount2016 <- sum(is.na(s2016))
-  
-  # Overall median generation
-  for(i in 1:length(names(s)))
-  {
-    s[[i]][nacount[] >= 14] <- NA
-  }
-  
-  beginCluster()
-  tsSortM <- calc(s, fun=median, na.rm = T)
-  endCluster()
+  ### still under development ###
   
   # Annual median, median difference and buffer generation
   for(i in 1:length(names(s2013)))

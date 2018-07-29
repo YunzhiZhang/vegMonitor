@@ -18,8 +18,6 @@ library(randomForest)
 if(!require(e1071)) install.packages("e1071")
 library(e1071)
 
-source("./aux/undersample.R", encoding = "UTF-8")
-
 ## function ###
 
 vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg, ntry, genLogs, writePath, format) {
@@ -102,6 +100,8 @@ vegClassify <- function(imgVector, baseShapefile, bands, responseCol, predShapef
     format <- "GTiff"
     warning(paste("no format provided, defaulting to ", format, sep=""))
   }
+  
+  source("./aux/undersample.R", encoding = "UTF-8")
   
   ### main loop ###
   
