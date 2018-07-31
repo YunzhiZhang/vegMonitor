@@ -20,7 +20,7 @@ library(e1071)
 
 ## function ###
 
-vegClassify <- function(imgVector, baseShapefile, bands = NULL, responseCol = NULL, predShapefile = NULL, undersample = NULL, predImg = NULL, ntry = NULL, genLogs = NULL, writePath = NULL, format = NULL) {
+vegClassify <- function(imgVector=NULL, baseShapefile=NULL, bands = NULL, responseCol = NULL, predShapefile = NULL, undersample = NULL, predImg = NULL, ntry = NULL, genLogs = NULL, writePath = NULL, format = NULL) {
   
   ### check dependencies ###
   
