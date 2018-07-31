@@ -174,12 +174,19 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
       }
   }
   
+  # write results
+  
+  for(i in 1:length(p)){
+    writeRaster(p[[i]], file.path(writePath, paste0("manW_", i, "_", i+1)), format = format, overwrite = TRUE)
+    if(clumps == TRUE){
+      writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
+    }
+  }
+  
   ### still under development
   
   # if(genLogs==TRUE)
   # genLogs should contain number of suspected pixels before manW, after manW and after clumping
-  # additional details with writing information
-  # write manW test results and clump results
   
   return(0)
 }
