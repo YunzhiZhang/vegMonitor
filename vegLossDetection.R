@@ -17,7 +17,7 @@ library(igraph)
 
 ### main function ###
 
-vegLossDetection <- function(imgVector, grouping, coarse, test, pval, directions, genLogs, writePath, format){
+vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, test = NULL, pval = NULL, clumps = NULL, directions = NULL, genLogs = NULL, writePath = NULL, format = NULL){
   
   ### check dependencies ###
   
@@ -31,24 +31,33 @@ vegLossDetection <- function(imgVector, grouping, coarse, test, pval, directions
     stop("please input grouping as a list of vectors")
   }
   
+  if(is.null(coarse)){
+    coarse <- TRUE
+    warning(paste0("no input for coarse provided, defaulting to ", coarse))
+  }
+  
   if(is.null(test)){
     test <- "generic.change"
     warning(paste0("no input for test detected, defaulting to ", test))
   }
   
-  if(is.null(coarse)){
-    coarse <- TRUE
-    warning(paste0("no input for coarse provided, defaulting to ", coarse))
-  }
   
   if(is.null(pval)){
     pval <- 0.05
     warning(paste0("no input for pval detected, defaulting to ", pval))
   }
   
-  if(is.null(directions)){
+  if(is.null(clumps)){
+    clumps <- TRUE
+    warning(paste0("no input for clumps detected, defaulting to ", clumps))
+  }
+  
+  if(is.null(directions) & clumps == TRUE){
     directions <- 8
     warning(paste0("no input for directions detected, defaulting to ", directions))
+  } else if(!is.null(directions) & clumps == FALSE){
+    rm(directions)
+    warning(paste0("no directions input since clumps is ", clumps))
   }
   
   if(is.null(genLogs)){
@@ -81,102 +90,96 @@ vegLossDetection <- function(imgVector, grouping, coarse, test, pval, directions
   
   source("./aux/pairing.R", encoding = "UTF-8")
   source("./aux/subtract.R", encoding = "UTF-8")
+  source("./aux/customUTest.R", encoding= "UTF-8")
   
   ### body ###
-
+  
+  p <- list()
   g <- lapply(grouping, function(x) return(stack(imgVector[x])))
-  gNA <- lapply(g, is.na)
+  f <- lapply(pairing(grouping), function(x) return(stack(imgVector[x])))
+  gNA <- lapply(g, function(x) sum(is.na(x)))
   
   # clean individual images for cleaner median calculation, remove large NA stacks
   
   for(i in 1:length(g)){
-    for(j in 1:length(names(g[[i]]))){
-      g[[i]][[j]][gNA[[i]][[j]] > length(names(g[[i]]))/2] <- NA
-    }
+      g[[i]][gNA[[i]][] > length(names(g[[i]]))/2] <- NA
   }
   
-  f <- lapply(pairing(g), function(x) return(stack(x)))
+  for(i in 1:length(f)){
+    f[[i]][gNA[[i]][] > length(names(g[[i]]))/2 | gNA[[i+1]][] > length(names(g[[i]]))/2] <- NA
+  }
   
   # generate medians of individual groups and stack consecutive medians, subtract medians to get buffers
-
+  
+  beginCluster()
   gM <- lapply(g, function(x) return(calc(x, fun=median, na.rm=T)))
   fM <- lapply(pairing(gM), function(x) return(stack(x)))
   diff <- lapply(fM, function(x) return(calc(x, fun=subtract)))
+  endCluster()
   
   # limiting search spaces for diff based on coarse option and test type
   
   if(test=="generic.change"){
-    test="two.sided"
+    testW="two.sided"
     if(coarse==TRUE){
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] < 1 && diff[[i]] > -1] <- NA
+        diff[[i]][diff[[i]][] < 1 & diff[[i]][] > -1] <- NA
       }
     } else{
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] < 0.5 && diff[[i]] > -0.5] <- NA
+        diff[[i]][diff[[i]][] < 0.5 & diff[[i]][] > -0.5] <- NA
       }
     }
   } else if(test=="increase") {
-    test="less"
+    testW="less"
     if(coarse==TRUE){
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] < 1] <- NA
+        diff[[i]][diff[[i]][] < 1] <- NA
       }
     } else{
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] < 0.5] <- NA
+        diff[[i]][diff[[i]][] < 0.5] <- NA
       }
     }
   } else if(test=="decrease"){
-    test="greater"
+    testW="greater"
     if(coarse==TRUE){
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] > -1] <- NA
+        diff[[i]][diff[[i]][] > -1] <- NA
       }
     } else{
       for(i in 1:length(diff)){
-        diff[[i]][diff[[i]] > -0.5] <- NA
+        diff[[i]][diff[[i]][] > -0.5] <- NA
       }
     }
   }
   
-  ### still under development ###
+  # custom U-test and filter results
   
-  # Applying U-test on buffer stack
-  buffer <- stack(buffer1, buffer2, buffer3)
-
-  # apply custom-U test here
-  
-  beginCluster()
-  test2013_2014 <- customUTest(s1, i=1, n1=6, n2 = 14)
-  test2014_2015 <- customUTest(s2, i=2, n1=8, n2 = 15)
-  test2015_2016 <- customUTest(s3, i=3, n1=7, n2 = 12)
-  endCluster()
-  
-  # Filter p-value to obtain raw pixels
-  test2013_2014_Raw <- test2013_2014; test2013_2014_Raw [test2013_2014_Raw[] > 0.05] <- NA
-  test2014_2015_Raw <- test2014_2015; test2014_2015_Raw[test2014_2015_Raw[] > 0.05] <- NA
-  test2015_2016_Raw <- test2015_2016; test2015_2016_Raw[test2015_2016_Raw[] > 0.05] <- NA
-  
-  # Filter raw pixels to obtain clump pixels
-  test_Clump <- stack(test2013_2014_Raw, test2014_2015_Raw, test2015_2016_Raw)
-  
-  for(i in 1:3){
-    testClump <- clump(test_Clump[[i]], directions=8, gaps = TRUE)
-    clumpFreq <- freq(testClump)
-    clumpFreq <- as.data.frame(clumpFreq)
-    excludeID <- clumpFreq$value[which(clumpFreq$count==1)]
-    test_Clump[[i]][testClump %in% excludeID] <- NA
+  for(i in 1:length(f)){
+    p[[i]] <- customUTest(f[[i]], diff[[i]], length(grouping[[i]]), (length(grouping[[i]]) + length(grouping[[i+1]])), testW)
+    p[[i]][p[[i]][] > pval] <- NA
   }
   
-  test2013_2014_Clump <- test_Clump[[1]]
-  test2014_2015_Clump <- test_Clump[[2]]
-  test2015_2016_Clump <- test_Clump[[3]]
+  # clumping of pixels
+  
+  if(clumps == TRUE){
+      c <- p
+      clumpsR <- lapply(c, function(x) return(clump(x, directions=directions, gaps = TRUE)))
+      clumpFreq <- lapply(clumpsR, function(x) return(as.data.frame(freq(x))))
+      excludeID <- lapply(clumpFreq, function(x) return(x$value[which(x$count==1)]))
+      
+      for(i in 1:length(c)){
+        c[[i]][clumps[[i]] %in% excludeID[[i]]] <- NA
+      }
+  }
+  
+  ### still under development
+  
+  # if(genLogs==TRUE)
+  # genLogs should contain number of suspected pixels before manW, after manW and after clumping
+  # additional details with writing information
+  # write manW test results and clump results
+  
+  return(0)
 }
-
-# extra buffer for personal project, no need to include in generic function
-# this helps with the coniferous/broad-leaved issue
-
-buffer1 <- tsMD_2013_2014; buffer1[tsM2014[] <= 2] <- NA
-buffer2 <- tsMD_2014_2015; buffer2[tsM2015[] <= 2] <- NA
-buffer3 <- tsMD_2015_2016; buffer3[tsM2016[] <= 2] <- NA
