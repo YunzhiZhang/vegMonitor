@@ -29,8 +29,8 @@ Here, we use the random forests algorithm with field data to classify vegetation
 `vegClassification.R` is a generic R-script containing a useful `vegClassify` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegClassification.R
 
 ```{r}
-vegClassify(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg,
-            ntry, genLogs, writePath, format)
+vegClassify(imgVector, baseShapefile, bands, responseCol, predShapefile, undersample, predImg, ntry, 
+            genLogs, writePath, format)
 ```
 
 **Arguments**
@@ -70,8 +70,7 @@ In order to conduct vegetation loss detection, we use a rasterized Mann-Whitney 
 `vegLossDetection.R` is a generic R-script containing a useful `vegLossDetection` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegLossDetection.R
 
 ```{r}
-vegLossDetection(imgVector, grouping, coarse, test, pval, clumps, directions, genLogs,
-                  writePath, format)
+vegLossDetection(imgVector, grouping, coarse, test, pval, clumps, directions, genLogs, writePath, format)
 ```
 
 **Arguments**
