@@ -106,7 +106,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   }
   
   for(i in 1:length(f)){
-    f[[i]][gNA[[i]][] > length(names(g[[i]]))/2 | gNA[[i+1]][] > length(names(g[[i]]))/2] <- NA
+    f[[i]][gNA[[i]][] > length(names(g[[i]]))/2 | gNA[[i+1]][] > length(names(g[[i+1]]))/2] <- NA
   }
   
   # generate medians of individual groups and stack consecutive medians, subtract medians to get buffers
