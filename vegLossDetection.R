@@ -54,7 +54,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   if(is.null(directions) & clumps == TRUE){
     directions <- 8
     warning(paste0("no input for directions detected, defaulting to ", directions))
-  } else if(!is.null(directions) & clumps == FALSE){
+  } else if(clumps == FALSE){
     rm(directions)
     warning(paste0("no directions input since clumps is ", clumps))
   }

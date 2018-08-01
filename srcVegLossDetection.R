@@ -1,7 +1,7 @@
-imgVector <- list.files("/home/shankar/Desktop/Git/Archive/backup/gitVegMonitor/vegClassification", pattern = ".tif$", full.names = TRUE)[-c(7,8,20,29,30)]
+imgVector <- list.files(paste0(getwd(), "/output/vegClassification/"), pattern = ".tif$", full.names = TRUE)
 grouping = list(c(1:6), c(7:14), c(15:21), c(22:26))
 coarse = NULL
-test = NULL
+test = "increase"
 pval = NULL
 clumps = NULL
 directions = NULL
