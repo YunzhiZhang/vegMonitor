@@ -63,6 +63,14 @@ Optional:
 
     Other possibilities for `format` are listed here: https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/writeRaster
 
+**Sample output**
+
+Vegetation classification images produced using `vegClassify` are visualized below. This visualization was conducted using the `levelplot` function in the CRAN `rasterVis` package.
+
+Note: 1 represents confierous forests, 2 represents broad-leaved forests, 3 represents cropland, shrubs and grasslands, and 4 represents non-vegetated areas
+
+<img src="/rimg/results_test.png" width="800">
+
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
 In order to conduct vegetation loss detection, we use a rasterized Mann-Whitney change detection technique. The Mann-Whitney U test is a non-parametric statistical test for independent data samples and is particularly used for ordinal data.
@@ -101,3 +109,9 @@ Optional:
 10. `format` is a string which points how the resulting predicted raster should be written. Defaults to "GTiff".
 
     Other possibilities for `format` are listed here: https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/writeRaster
+
+**Sample output**
+
+The visualization below shows red pixels which indicate significant vegetation loss, with the condition of `clumps=TRUE`.
+
+<img src="/rimg/dest.jpg" width="800">

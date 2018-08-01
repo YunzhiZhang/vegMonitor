@@ -100,6 +100,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   
   # clean individual images for cleaner median calculation, remove large NA stacks
   
+  cat("cleaning images for median calculations\nremoving large NA stacks...\n")
+  
   for(i in 1:length(g)){
     g[[i]][gNA[[i]][] > length(names(g[[i]]))/2] <- NA
   }
@@ -109,6 +111,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   }
   
   # generate medians of individual groups and stack consecutive medians, subtract medians to get buffers
+  
+  cat("generating medians and difference rasters...\n")
   
   beginCluster()
   gM <- lapply(g, function(x) return(calc(x, fun=median, na.rm=T)))
@@ -154,6 +158,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   }
   
   # custom U-test and filter results
+  
+  cat("starting customUTest...\n")
   
   for(i in 1:length(f)){
     p[[i]] <- customUTest(f[[i]], diff[[i]], length(grouping[[i]]), (length(grouping[[i]]) + length(grouping[[i+1]])), testW)
@@ -205,6 +211,5 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
       writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
     }
   }
-  
   return(0)
 }

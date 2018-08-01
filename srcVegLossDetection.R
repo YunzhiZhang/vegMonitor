@@ -1,4 +1,4 @@
-imgVector <- list.files(paste0(getwd(), "/output/vegClassification/"), pattern = ".tif$", full.names = TRUE)
+imgVector <- list.files(paste0(getwd(), "/output/vegClassification"), pattern = ".tif$", full.names = TRUE)
 grouping = list(c(1:6), c(7:14), c(15:21), c(22:26))
 coarse = NULL
 test = "increase"
