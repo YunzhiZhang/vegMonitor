@@ -22,6 +22,10 @@ For a detailed look on how to acquire and pre-process remote sensing data, pleas
 
 ### 2. Supervised vegetation classification using field data and the Random Forests algorithm
 
+The random forests algorithm is an effective supervised classification technique developed in Breiman (2001): https://en.wikipedia.org/wiki/Random_forest
+
+Here, we use the random forests algorithm with field data to classify vegetation using Landsat 8 Surface Reflectance data.
+
 `vegClassification.R` is a generic R-script containing a useful `vegClassify` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegClassification.R
 
 ```{r}
@@ -61,4 +65,39 @@ Optional:
 
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
-`vegLossDetection.R` is a generic R-script with a useful function. This is still under development.
+In order to conduct vegetation loss detection, we use a rasterized Mann-Whitney change detection technique. The Mann-Whitney U test is a non-parametric statistical test for independent data samples and is particularly used for ordinal data.
+
+`vegLossDetection.R` is a generic R-script containing a useful `vegLossDetection` function: https://github.com/AtreyaSh/vegMonitor/blob/master/vegLossDetection.R
+
+```{r}
+vegLossDetection(imgVector, grouping, coarse, test, pval, clumps, directions, genLogs,
+                  writePath, format)
+```
+
+**Arguments**
+
+Mandatory:
+
+1. `imgVector` is a vector containing the absolute string paths with endings (eg. "/path/to/folder/xyz.tif") of classification images that are to be processed.
+
+2. `grouping` is a list containing vector indices that separate `imgVector` into groups.
+
+Optional:
+
+3. `coarse` is a boolean which creates a smaller search space for significant change pixels. Defaults to "TRUE".
+
+4. `test` refers to the type of statistical test for investigating changes. Possibilites are "generic.change", "increase", "decrease". Defaults to "generic.change".
+
+5. `pval` refers to the p-value required for a signficant change detection. Defaults to 0.05.
+
+6. `clumps` is a boolean which conducts further processing on significant change pixels to identify pixels which are clumped together in groups containing more than 1 pixel.
+
+7. `directions` is a numerical value which refers to the directions which are considered adjacent for `clumps`. Only relevant when `clumps = TRUE`. Possibilities are 4 and 8. Defaults to 8 if `clumps = TRUE`.
+
+8. `genLogs` is a boolean which results in logs of training, testing and variable importance to be created and written into `writePath`. Defaults to "TRUE".
+
+9. `writePath` is a path directory which points the function on where to write the results of the function. Defaults to "./output/vegClassification".
+
+10. `format` is a string which points how the resulting predicted raster should be written. Defaults to "GTiff".
+
+    Other possibilities for `format` are listed here: https://www.rdocumentation.org/packages/raster/versions/2.6-7/topics/writeRaster
