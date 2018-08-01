@@ -23,6 +23,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   
   if(is.null(imgVector)){
     stop("please specify a vector containing absolute string paths with endings for images")
+  } else if(!is.vector(imgVector)){
+    stop("please specify imgVector as a vector")
   }
   
   if(is.null(grouping)){
@@ -34,34 +36,45 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   if(is.null(coarse)){
     coarse <- TRUE
     warning(paste0("no input for coarse provided, defaulting to ", coarse))
+  } else if(!is.logical(coarse)){
+    stop("coarse must be logical")
   }
   
   if(is.null(test)){
     test <- "generic.change"
     warning(paste0("no input for test detected, defaulting to ", test))
+  } else if (!test %in% c("generic.change", "increase", "decrease")){
+    stop("test must be either generic.change, increase or decrease")
   }
   
   if(is.null(pval)){
     pval <- 0.05
     warning(paste0("no input for pval detected, defaulting to ", pval))
+  } else if (!is.numeric){
+    stop("pval must be numeric")
   }
   
   if(is.null(clumps)){
     clumps <- TRUE
     warning(paste0("no input for clumps detected, defaulting to ", clumps))
+  } else if(!is.logical(clumps)){
+    stop("clumps must be logical")
   }
   
   if(is.null(directions) & clumps == TRUE){
     directions <- 8
     warning(paste0("no input for directions detected, defaulting to ", directions))
   } else if(clumps == FALSE){
-    rm(directions)
     warning(paste0("no directions input since clumps is ", clumps))
+  } else if(!directions %in% c(4,8)){
+    stop("directions must be either 4 or 8")
   }
   
   if(is.null(genLogs)){
     genLogs <- TRUE
     warning(paste("no genLogs supplied, defaulting to ", genLogs, sep = ""))
+  } else if(!is.logical(genLogs)){
+    stop("genLogs must be logical")
   }
   
   if(is.null(writePath)){
@@ -100,7 +113,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   
   # clean individual images for cleaner median calculation, remove large NA stacks
   
-  cat("cleaning images for median calculations\nremoving large NA stacks...\n")
+  cat("cleaning images for median calculations, removing large NA stacks...\n")
   
   for(i in 1:length(g)){
     g[[i]][gNA[[i]][] > length(names(g[[i]]))/2] <- NA
@@ -157,16 +170,17 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     }
   }
   
-  # custom U-test and filter results
+  # custom U-test and filter results, and write results
   
   cat("starting customUTest...\n")
   
   for(i in 1:length(f)){
     p[[i]] <- customUTest(f[[i]], diff[[i]], length(grouping[[i]]), (length(grouping[[i]]) + length(grouping[[i+1]])), testW)
     p[[i]][p[[i]][] > pval] <- NA
+    writeRaster(p[[i]], file.path(writePath, paste0("manW_", i, "_", i+1)), format = format, overwrite = TRUE)
   }
   
-  # clumping of pixels
+  # clumping of pixels and write results
   
   if(clumps == TRUE){
     c <- p
@@ -176,6 +190,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     
     for(i in 1:length(c)){
       c[[i]][clumps[[i]] %in% excludeID[[i]]] <- NA
+      writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
     }
   }
   
@@ -201,15 +216,6 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
       row.names(logs)[i] <- paste0(i, "_", i+1)
     }
     write.csv(logs, file.path(writePath, "logs.csv"), row.names = TRUE)
-  }
-  
-  # write results
-  
-  for(i in 1:length(p)){
-    writeRaster(p[[i]], file.path(writePath, paste0("manW_", i, "_", i+1)), format = format, overwrite = TRUE)
-    if(clumps == TRUE){
-      writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
-    }
   }
   return(0)
 }

@@ -26,7 +26,9 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
   
   if(is.null(imgVector)){
     stop("please indicate a list of images with absolute path names and endings")
-  } else {
+  } else if(!is.vector(imgVector)){
+    stop("please specify imgVector as a vector")
+  } else if (is.vector(imgVector)){
     s <- lapply(imgVector, stack)
   }
   
@@ -37,7 +39,11 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
   if(is.null(bands)){
     warning("no bands specified for training, defaulting to all bands")
     allBands <- TRUE
-  } else allBands <- FALSE
+  } else if (!is.vector(bands)){
+    stop("bands must be specified as a vector")
+  } else if (is.vector(bands)){
+    allBands <- FALSE
+  }
   
   if(is.null(responseCol)){
     responseCol = "OBJECTID"
@@ -55,21 +61,29 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
   if(is.null(undersample)){
     undersample <- TRUE
     warning(paste("no undersample supplied, defaulting to ", undersample, sep = ""))
+  } else if(!is.logical(undersample)){
+    stop("undersample must be logical")
   }
   
   if(is.null(predImg)){
     predImg <- TRUE
     warning(paste("no predImg supplied, defaulting to ", predImg, sep = ""))
+  } else if(!is.logical(predImg)){
+    stop("predImg must be logical")
   }
   
   if(is.null(ntry)){
     ntry <- 500
     warning(paste("no ntree supplied, defaulting to ", ntry, sep = ""))
+  } else if(!is.numeric(ntry) | length(ntry) > 1){
+    stop("ntry must be numeric and have a length of 1")
   }
   
   if(is.null(genLogs)){
     genLogs <- TRUE
     warning(paste("no genLogs supplied, defaulting to ", genLogs, sep = ""))
+  } else if(!is.logical(genLogs)){
+    stop("genLogs must be logical")
   }
   
   if(genLogs==TRUE){
