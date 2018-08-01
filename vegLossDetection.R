@@ -187,7 +187,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
       logs[i,6] <- length(which(!is.na(diff[[i]][])))
       logs[i,7] <- length(which(!is.na(p[[i]][])))
       if(clumps==TRUE){
-        logs[i,8] <-  length(which(!is.na(c[[i]][])))
+        logs[i,5] <- directions
+        logs[i,8] <- length(which(!is.na(c[[i]][])))
       } else {
         logs[i,5] <- NA
         logs[i,8] <- NA
