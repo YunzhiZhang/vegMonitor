@@ -69,7 +69,7 @@ Vegetation classification images produced using `vegClassify` are visualized bel
 
 Note: 1 represents confierous forests, 2 represents broad-leaved forests, 3 represents cropland, shrubs and grasslands, and 4 represents non-vegetated areas
 
-<img src="/rimg/results_test.png" width="500">
+<img src="/rimg/results_test.png" width="650">
 
 ### 3. Vegetation loss detection using a custom-rasterized Mann-Whitney technique
 
@@ -114,4 +114,4 @@ Optional:
 
 The visualization below shows red pixels which indicate significant vegetation loss, with the condition of `clumps=TRUE`.
 
-<img src="/rimg/dest.jpg" width="500">
+<img src="/rimg/dest.jpg" width="650">
