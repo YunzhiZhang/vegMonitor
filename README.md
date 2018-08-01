@@ -93,7 +93,7 @@ Optional:
 
 7. `directions` is a numerical value which refers to the directions which are considered adjacent for `clumps`. Only relevant when `clumps = TRUE`. Possibilities are 4 and 8. Defaults to 8 if `clumps = TRUE`.
 
-8. `genLogs` is a boolean which results in logs of training, testing and variable importance to be created and written into `writePath`. Defaults to "TRUE".
+8. `genLogs` is a boolean which results in logs of results to be created and written into `writePath`. Defaults to "TRUE".
 
 9. `writePath` is a path directory which points the function on where to write the results of the function. Defaults to "./output/vegClassification".
 
