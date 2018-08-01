@@ -71,7 +71,7 @@ In order to conduct vegetation loss detection, we use a rasterized Mann-Whitney 
 
 ```{r}
 vegLossDetection(imgVector, grouping, coarse=NULL, test=NULL, pval=NULL, 
-                clumps=NULL, directions=NULL, genLogs=NULL, writePath=NULL, format=NULL)
+                 clumps=NULL, directions=NULL, genLogs=NULL, writePath=NULL, format=NULL)
 ```
 
 **Arguments**
