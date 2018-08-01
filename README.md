@@ -79,7 +79,7 @@ Mandatory:
 
 1. `imgVector` is a vector containing the absolute string paths with endings (eg. "/path/to/folder/xyz.tif") of classification images that are to be processed.
 
-2. `grouping` is a list containing vector indices that separate `imgVector` into groups.
+2. `grouping` is a list containing vector indices that separates `imgVector` into groups.
 
 Optional:
 
