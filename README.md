@@ -112,6 +112,6 @@ Optional:
 
 **Sample output**
 
-The visualization below shows red pixels which indicate significant vegetation loss, with the condition of `clumps=TRUE`. This visualization was created using the layout function of ArcMap version 10.3.
+The visualization below shows clumped pixels produced through `vegLossDetection` with the condition of `clumps=TRUE`. These red pixels indicate regions which underweent significant vegetation loss. This visualization was created using the layout function of ArcMap version 10.3.
 
 <img src="/rimg/dest.jpg" width="650">
