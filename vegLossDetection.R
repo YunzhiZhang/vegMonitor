@@ -102,7 +102,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   # clean individual images for cleaner median calculation, remove large NA stacks
   
   for(i in 1:length(g)){
-      g[[i]][gNA[[i]][] > length(names(g[[i]]))/2] <- NA
+    g[[i]][gNA[[i]][] > length(names(g[[i]]))/2] <- NA
   }
   
   for(i in 1:length(f)){
@@ -164,14 +164,37 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   # clumping of pixels
   
   if(clumps == TRUE){
-      c <- p
-      clumpsR <- lapply(c, function(x) return(clump(x, directions=directions, gaps = TRUE)))
-      clumpFreq <- lapply(clumpsR, function(x) return(as.data.frame(freq(x))))
-      excludeID <- lapply(clumpFreq, function(x) return(x$value[which(x$count==1)]))
-      
-      for(i in 1:length(c)){
-        c[[i]][clumps[[i]] %in% excludeID[[i]]] <- NA
+    c <- p
+    clumpsR <- lapply(c, function(x) return(clump(x, directions=directions, gaps = TRUE)))
+    clumpFreq <- lapply(clumpsR, function(x) return(as.data.frame(freq(x))))
+    excludeID <- lapply(clumpFreq, function(x) return(x$value[which(x$count==1)]))
+    
+    for(i in 1:length(c)){
+      c[[i]][clumps[[i]] %in% excludeID[[i]]] <- NA
+    }
+  }
+  
+  # generate logs of results
+  
+  if(genLogs==TRUE){
+    logs <- data.frame(matrix(ncol=8))
+    names(logs) <- c("coarse", "test", "pval", "clumps", "directions", "diffPixels", "pPixels", "cPixels")
+    for(i in 1:length(diff)){
+      logs[i,1] <- coarse
+      logs[i,2] <- test
+      logs[i,3] <- pval
+      logs[i,4] <- clumps
+      logs[i,6] <- length(which(!is.na(diff[[i]][])))
+      logs[i,7] <- length(which(!is.na(p[[i]][])))
+      if(clumps==TRUE){
+        logs[i,8] <-  length(which(!is.na(c[[i]][])))
+      } else {
+        logs[i,5] <- NA
+        logs[i,8] <- NA
       }
+      row.names(logs)[i] <- paste0(i, "_", i+1)
+    }
+    write.csv(logs, file.path(writePath, "logs.csv"), row.names = TRUE)
   }
   
   # write results
@@ -182,11 +205,6 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
       writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
     }
   }
-  
-  ### still under development
-  
-  # if(genLogs==TRUE)
-  # genLogs should contain number of suspected pixels before manW, after manW and after clumping
   
   return(0)
 }
