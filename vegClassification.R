@@ -163,7 +163,8 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
       tmpVarImp[[i]] <- varImp(image_rf)$importance
       rownames(tmpVarImp[[i]]) <- paste(strsplit(names(s[[i]])[1], "[.]")[[1]][1], ".", rownames(varImp(image_rf)$importance), sep="") 
       
-      tmpResults[[i]] <- cbind(image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),],nrow(image_train))
+      tmpResults[[i]] <- cbind(undersample, ntry, image_rf$results[which(image_rf$results[,3] == max(image_rf$results[,3])),], nrow(image_train))
+      names(tmpResults[[i]])[1:2] <- c("undersample", "ntry")
       names(tmpResults[[i]])[length(names(tmpResults[[i]]))] <- "trainingPixels"
       rownames(tmpResults[[i]]) <- strsplit(names(s[[i]])[1], "[.]")[[1]][1]
       
@@ -172,7 +173,8 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
       Kappa <- confusionMatrix(imagepred_valid, as.factor(image_valid$class))$overall[2]
       byClass <- do.call("cbind", lapply(confusionMatrix(imagepred_valid, as.factor(image_valid$class))$byClass[,1], function(x) return(x)))
       
-      tmpPred[[i]] <- cbind(Accuracy, Kappa, byClass, nrow(image_valid))
+      tmpPred[[i]] <- cbind(undersample, Accuracy, Kappa, byClass, nrow(image_valid))
+      colnames(tmpPred[[i]])[1] <- "undersample"
       colnames(tmpPred[[i]])[length(colnames(tmpPred[[i]]))] <- "testPixels"
       rownames(tmpPred[[i]]) <- strsplit(names(s[[i]])[1], "[.]")[[1]][1]
     }

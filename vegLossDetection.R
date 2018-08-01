@@ -41,7 +41,6 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     warning(paste0("no input for test detected, defaulting to ", test))
   }
   
-  
   if(is.null(pval)){
     pval <- 0.05
     warning(paste0("no input for pval detected, defaulting to ", pval))
