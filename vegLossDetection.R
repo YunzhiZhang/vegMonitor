@@ -78,7 +78,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   }
   
   if(is.null(writePath)){
-    writePath = paste(getwd(), "/output/vegClassification", sep = "")
+    writePath = paste(getwd(), "/output/vegLossDetection", sep = "")
     warning(paste("no writePath supplied, defaulting to ", writePath, sep=""))
     
     if(!file.exists(writePath)){
@@ -105,6 +105,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   source("./aux/customUTest.R", encoding= "UTF-8")
   
   ### body ###
+  
+  start <- proc.time()
   
   p <- list()
   g <- lapply(grouping, function(x) return(stack(imgVector[x])))
@@ -189,7 +191,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     excludeID <- lapply(clumpFreq, function(x) return(x$value[which(x$count==1)]))
     
     for(i in 1:length(c)){
-      c[[i]][clumps[[i]] %in% excludeID[[i]]] <- NA
+      c[[i]][clumpsR[[i]] %in% excludeID[[i]]] <- NA
       writeRaster(c[[i]], file.path(writePath, paste0("manW_clump_", i, "_", i+1)), format = format, overwrite = TRUE)
     }
   }
@@ -217,5 +219,8 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     }
     write.csv(logs, file.path(writePath, "logs.csv"), row.names = TRUE)
   }
+  
+  end <- proc.time()
+  print(end-start)
   return(0)
 }

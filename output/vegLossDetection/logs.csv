@@ -1,0 +1,4 @@
+"","coarse","test","pval","clumps","directions","diffPixels","pPixels","cPixels"
+"1_2",TRUE,"increase",0.05,TRUE,8,21139,4102,1644
+"2_3",TRUE,"increase",0.05,TRUE,8,21582,5199,2264
+"3_4",TRUE,"increase",0.05,TRUE,8,23884,4565,2264
