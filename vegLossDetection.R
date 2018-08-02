@@ -104,7 +104,7 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
   source("./aux/subtract.R", encoding = "UTF-8")
   source("./aux/customUTest.R", encoding= "UTF-8")
   
-  ### body ###
+  ### main body ###
   
   start <- proc.time()
   
