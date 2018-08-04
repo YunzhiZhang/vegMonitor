@@ -57,7 +57,7 @@ Optional:
 
 9. `genLogs` is a boolean which results in logs of training, testing and variable importance to be created and written into `writePath`. Defaults to "TRUE".
 
-10. `writePath` is a path directory which points the function on where to write the results of the function. Defaults to "./output/vegClassification".
+10. `writePath` is a path directory which points the function on which directory to write the results of the function. Defaults to "./output/vegClassification".
 
 11. `format` is a string which points how the resulting predicted raster should be written. Defaults to "GTiff".
 
@@ -104,7 +104,7 @@ Optional:
 
 8. `genLogs` is a boolean which results in logs of results to be created and written into `writePath`. Defaults to "TRUE".
 
-9. `writePath` is a path directory which points the function on where to write the results of the function. Defaults to "./output/vegClassification".
+9. `writePath` is a path directory which points the function on wich directory to write the results of the function. Defaults to "./output/vegClassification".
 
 10. `format` is a string which points how the resulting predicted raster should be written. Defaults to "GTiff".
 
