@@ -20,34 +20,20 @@ library(e1071)
 
 ## function ###
 
-vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, responseCol = NULL, predShapefile = NULL, undersample = NULL, predImg = NULL, ntry = NULL, genLogs = NULL, writePath = NULL, format = NULL) {
+vegClassify <- function(imgVector, baseShapefile, bands = NULL, responseCol = "OBJECTID", predShapefile = NULL, undersample = TRUE, predImg = TRUE, ntry = 500, genLogs = TRUE, writePath = NULL, format = NULL) {
   
   ### check dependencies ###
   
-  if(is.null(imgVector)){
-    stop("please indicate a list of images with absolute path names and endings")
-  } else if(!is.vector(imgVector)){
+  if(!is.vector(imgVector)){
     stop("please specify imgVector as a vector")
   } else if (is.vector(imgVector)){
     s <- lapply(imgVector, stack)
   }
   
-  if(is.null(baseShapefile)){
-    stop("please indicate the path of the base shapefile with .shp ending")
-  } else shape_pointData <- shapefile(baseShapefile)
-  
-  if(is.null(bands)){
-    warning("no bands specified for training, defaulting to all bands")
-    allBands <- TRUE
-  } else if (!is.vector(bands)){
+  if (!is.vector(bands)){
     stop("bands must be specified as a vector")
   } else if (is.vector(bands)){
     allBands <- FALSE
-  }
-  
-  if(is.null(responseCol)){
-    responseCol = "OBJECTID"
-    warning(paste("no responseCol supplied, defaulting to ", responseCol, sep = ""))
   }
   
   if(is.null(predShapefile)){
@@ -58,31 +44,19 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
     pred <- TRUE
   }
   
-  if(is.null(undersample)){
-    undersample <- TRUE
-    warning(paste("no undersample supplied, defaulting to ", undersample, sep = ""))
-  } else if(!is.logical(undersample)){
+  if(!is.logical(undersample)){
     stop("undersample must be logical")
   }
   
-  if(is.null(predImg)){
-    predImg <- TRUE
-    warning(paste("no predImg supplied, defaulting to ", predImg, sep = ""))
-  } else if(!is.logical(predImg)){
+  if(!is.logical(predImg)){
     stop("predImg must be logical")
   }
   
-  if(is.null(ntry)){
-    ntry <- 500
-    warning(paste("no ntree supplied, defaulting to ", ntry, sep = ""))
-  } else if(!is.numeric(ntry) | length(ntry) > 1){
+  if(!is.numeric(ntry) | length(ntry) > 1){
     stop("ntry must be numeric and have a length of 1")
   }
   
-  if(is.null(genLogs)){
-    genLogs <- TRUE
-    warning(paste("no genLogs supplied, defaulting to ", genLogs, sep = ""))
-  } else if(!is.logical(genLogs)){
+  if(!is.logical(genLogs)){
     stop("genLogs must be logical")
   }
   
@@ -95,19 +69,12 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
   if(is.null(writePath)){
     writePath = paste(getwd(), "/output/vegClassification", sep = "")
     warning(paste("no writePath supplied, defaulting to ", writePath, sep=""))
-    
-    if(!file.exists(writePath)){
-      warning(paste(writePath, " does not exist, creating directory instead...", sep=""))
-      dir.create(writePath)
-    }
-    
   } else if (substr(writePath, nchar(writePath), nchar(writePath)) == "/") {
     writePath <- substr(writePath, 1, nchar(writePath)-1)
-    if (!file.exists(writePath)) {
-      stop(paste("the directory ", writePath, " does not exist", sep=""))
-    }
-  } else if (!file.exists(writePath)) {
-    stop(paste("the directory ", writePath, " does not exist", sep=""))
+  }
+  
+  if(!file.exists(writePath)){
+    stop(paste("the directory ", writePath, " does not exist, check working directory...", sep=""))
   }
   
   if(is.null(format)){
@@ -122,6 +89,8 @@ vegClassify <- function(imgVector = NULL, baseShapefile = NULL, bands = NULL, re
   start <- proc.time()
   pb.overall <- txtProgressBar(min = 0, max = length(s), initial = 0, char = "=",
                                width = options()$width, style = 3, file = "")
+  
+  shape_pointData <- shapefile(baseShapefile)
   
   for(i in 1:length(s)){
     

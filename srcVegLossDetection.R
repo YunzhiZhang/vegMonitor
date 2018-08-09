@@ -1,17 +1,10 @@
 imgVector <- list.files(paste0(getwd(), "/output/vegClassification"), pattern = ".tif$", full.names = TRUE)
 grouping = list(c(1:6), c(7:14), c(15:21), c(22:26))
-coarse = NULL
 test = "increase"
-pval = NULL
-clumps = NULL
-directions = NULL
-genLogs = NULL
-writePath = NULL
-format = NULL
 
 source("vegLossDetection.R", encoding = "UTF-8")
 
-vegLossDetection(imgVector, grouping, coarse, test, pval, clumps, directions, genLogs, writePath, format)
+vegLossDetection(imgVector, grouping, test = test)
 
 # extra buffer for personal project, no need to include in generic function
 # this helps with the coniferous/broad-leaved issue

@@ -17,47 +17,31 @@ library(igraph)
 
 ### main function ###
 
-vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, test = NULL, pval = NULL, clumps = NULL, directions = NULL, genLogs = NULL, writePath = NULL, format = NULL){
+vegLossDetection <- function(imgVector, grouping, coarse = TRUE, test = "generic.change", pval = 0.05, clumps = TRUE, directions = 8, genLogs = TRUE, writePath = NULL, format = NULL){
   
   ### check dependencies ###
   
-  if(is.null(imgVector)){
-    stop("please specify a vector containing absolute string paths with endings for images")
-  } else if(!is.vector(imgVector)){
+  if(!is.vector(imgVector)){
     stop("please specify imgVector as a vector")
   }
   
-  if(is.null(grouping)){
-    stop("please specify a list of vectors containing the indices of images to be grouped")
-  } else if(!is.list(grouping)){
+  if(!is.list(grouping)){
     stop("please input grouping as a list of vectors")
   }
   
-  if(is.null(coarse)){
-    coarse <- TRUE
-    warning(paste0("no input for coarse provided, defaulting to ", coarse))
-  } else if(!is.logical(coarse)){
+  if(!is.logical(coarse)){
     stop("coarse must be logical")
   }
   
-  if(is.null(test)){
-    test <- "generic.change"
-    warning(paste0("no input for test detected, defaulting to ", test))
-  } else if (!test %in% c("generic.change", "increase", "decrease")){
+  if(!test %in% c("generic.change", "increase", "decrease")){
     stop("test must be either generic.change, increase or decrease")
   }
   
-  if(is.null(pval)){
-    pval <- 0.05
-    warning(paste0("no input for pval detected, defaulting to ", pval))
-  } else if (!is.numeric){
+  if(!is.numeric(pval)){
     stop("pval must be numeric")
   }
   
-  if(is.null(clumps)){
-    clumps <- TRUE
-    warning(paste0("no input for clumps detected, defaulting to ", clumps))
-  } else if(!is.logical(clumps)){
+  if(!is.logical(clumps)){
     stop("clumps must be logical")
   }
   
@@ -65,33 +49,23 @@ vegLossDetection <- function(imgVector = NULL, grouping = NULL, coarse = NULL, t
     directions <- 8
     warning(paste0("no input for directions detected, defaulting to ", directions))
   } else if(clumps == FALSE){
-    warning(paste0("no directions input since clumps is ", clumps))
-  } else if(!directions %in% c(4,8)){
+    warning(paste0("no directions parsed since clumps is ", clumps))
+  } else if(!directions %in% c(4,8) & length(directions) == 1){
     stop("directions must be either 4 or 8")
   }
   
-  if(is.null(genLogs)){
-    genLogs <- TRUE
-    warning(paste("no genLogs supplied, defaulting to ", genLogs, sep = ""))
-  } else if(!is.logical(genLogs)){
+  if(!is.logical(genLogs)){
     stop("genLogs must be logical")
   }
   
   if(is.null(writePath)){
     writePath = paste(getwd(), "/output/vegLossDetection", sep = "")
     warning(paste("no writePath supplied, defaulting to ", writePath, sep=""))
-    
-    if(!file.exists(writePath)){
-      warning(paste(writePath, " does not exist, creating directory instead...", sep=""))
-      dir.create(writePath)
-    }
-    
   } else if (substr(writePath, nchar(writePath), nchar(writePath)) == "/") {
     writePath <- substr(writePath, 1, nchar(writePath)-1)
-    if (!file.exists(writePath)) {
-      stop(paste("the directory ", writePath, " does not exist", sep=""))
-    }
-  } else if (!file.exists(writePath)) {
+  }
+  
+  if(!file.exists(writePath)) {
     stop(paste("the directory ", writePath, " does not exist", sep=""))
   }
   
